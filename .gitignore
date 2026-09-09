@@ -1,0 +1,17 @@
+# Heavy raw/build artifacts -- large, regeneratable from scripts/, and not
+# needed for anyone reading the code. Run scripts/download_metadata.py +
+# scripts/build_data.py locally to regenerate all of these.
+# metadata/   -- 286M, raw recount3 per-project downloads
+# samples/    -- 56M, raw per-sample dump (samples.jsonl)
+# generated/samples_data.js -- 54M, built artifact
+metadata/
+samples/
+generated/samples_data.js
+
+# Created locally the first time someone clicks "Connect Project Folder" --
+# their own in-progress Tasks/decisions/labels, never shared work.
+tasks/
+
+.DS_Store
+__pycache__/
+*.pyc

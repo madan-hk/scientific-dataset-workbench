@@ -1,0 +1,1999 @@
+LIVER:
+  data_source: gtex
+  n_samples: 251
+  qna:
+  - - Sample/source type?
+    - Solid liver tissue.
+  - - Sequencing/assay type?
+    - Bulk RNA-seq is indicated, with no more specific assay subtype provided.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - GTEx donor liver tissue; disease or health status is not specified.
+  - - Experimental groups?
+    - No experimental groups are specified in the metadata.
+  - - Study population?
+    - Adult donors are represented; sampled examples include both coded sexes and ages 50–69.
+  - - Experimental design?
+    - Observational donor-tissue collection; treatment, time-course, and pairing information are unavailable.
+  - - Sample count & distribution?
+    - 251 samples total; group-wise distribution is not provided.
+  - - Sample-level characteristics?
+    - All sampled rows are liver tissues from individual donors, with mixed coded sex and ages 50–69.
+  - - Concise summary?
+    - Human donor liver tissue profiled by bulk RNA-seq in an observational GTEx collection; disease status
+      and detailed population distribution are unspecified.
+BONE_MARROW:
+  data_source: gtex
+  n_samples: 204
+  qna:
+  - - Sample/source type?
+    - The samples are a cultured K-562 chronic myeloid leukemia (CML) cell line.
+  - - Sequencing/assay type?
+    - The sequencing or assay type is not specified.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - The biological state is a chronic myeloid leukemia (CML) cell line.
+  - - Experimental groups?
+    - No experimental groups or comparison conditions are specified.
+  - - Study population?
+    - The population is a human cell line, with age and sex unavailable.
+  - - Experimental design?
+    - The experimental design cannot be determined from the metadata.
+  - - Sample count & distribution?
+    - There are 204 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - All sampled rows are K-562 cell-line samples without specified treatments, time points, or replicates.
+  - - Concise summary?
+    - This is a 204-sample human K-562 CML cell-line dataset; assay type, groups, design, and demographics
+      are unspecified.
+MUSCLE:
+  data_source: gtex
+  n_samples: 881
+  qna:
+  - - Sample/source type?
+    - Skeletal muscle tissue from humans.
+  - - Sequencing/assay type?
+    - The sequencing or assay type is not specified in the metadata.
+  - - Organism/species?
+    - Samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - Disease status or specific biological condition is not specified.
+  - - Experimental groups?
+    - No experimental groups are identified.
+  - - Study population?
+    - The sampled individuals are adults aged 30–69 years, with both sexes represented.
+  - - Experimental design?
+    - The experimental design cannot be determined from the metadata.
+  - - Sample count & distribution?
+    - There are 881 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples vary by donor, sex, and age, while all represent skeletal muscle.
+  - - Concise summary?
+    - This dataset contains 881 human skeletal-muscle samples, but assay type, disease status, groups,
+      and design are unspecified.
+SMALL_INTESTINE:
+  data_source: gtex
+  n_samples: 193
+  qna:
+  - - Sample/source type?
+    - Solid tissue from the small intestine, specifically terminal ileum.
+  - - Sequencing/assay type?
+    - Bulk RNA-seq is indicated; single-cell, spatial, and small-RNA assays are not indicated.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease status is not specified; samples are from the GTEx tissue resource.
+  - - Experimental groups?
+    - No experimental groups are specified; samples are all terminal-ileum specimens.
+  - - Study population?
+    - Adult donors are represented, with sampled ages 20–69 years and both recorded sex codes.
+  - - Experimental design?
+    - Observational, unpaired tissue sampling without treatment or time-course information.
+  - - Sample count & distribution?
+    - There are 193 samples, all apparently terminal ileum; group-wise distribution beyond this is unavailable.
+  - - Sample-level characteristics?
+    - Shown samples are donor-specific terminal-ileum specimens with age categories 20–69 and sex codes
+      1 or 2.
+  - - Concise summary?
+    - Human terminal-ileum bulk RNA-seq from 193 GTEx donors in an observational tissue survey; disease
+      status is unspecified.
+ADRENAL_GLAND:
+  data_source: gtex
+  n_samples: 274
+  qna:
+  - - Sample/source type?
+    - Solid adrenal gland tissue.
+  - - Sequencing/assay type?
+    - The sequencing or assay type is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease status or biological condition is not specified.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - Adult human donors; sampled rows include ages 20–69 and both sexes.
+  - - Experimental design?
+    - The experimental design is not specified.
+  - - Sample count & distribution?
+    - There are 274 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - All sampled rows represent adrenal gland tissue from individual donors with varying ages and sexes.
+  - - Concise summary?
+    - This dataset contains human adrenal gland samples, but assay type, disease status, groups, and design
+      are unspecified.
+CESC:
+  data_source: tcga
+  n_samples: 309
+  qna:
+  - - Sample/source type?
+    - Solid cervical tissue, comprising primarily primary tumors with a few normal and metastatic samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell sequencing is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Cervical squamous cell carcinoma and endocervical adenocarcinoma, with primary tumors, normal tissue,
+      and metastases.
+  - - Experimental groups?
+    - Primary tumor, solid tissue normal, and metastatic sample groups, including squamous and adenocarcinoma
+      histologies.
+  - - Study population?
+    - Adult patients; sampled ages are 44–55 years, while sex and the overall age range are unavailable.
+  - - Experimental design?
+    - Observational TCGA cohort with mixed sample types; treatment, pairing, and longitudinal structure
+      are not reported.
+  - - Sample count & distribution?
+    - '309 samples: 304 primary tumors, 3 solid-tissue normals, and 2 metastases.'
+  - - Sample-level characteristics?
+    - The five sampled rows are all primary tumors spanning squamous and adenocarcinoma histologies, ages
+      44–55, and stages IB2–IVB.
+  - - Concise summary?
+    - This is a 309-sample human cervical-tissue Illumina RNA-seq cohort of cervical cancer, mixing tumor,
+      normal, and metastatic samples; design details are limited.
+PRAD:
+  data_source: tcga
+  n_samples: 558
+  qna:
+  - - Sample/source type?
+    - Solid prostate tissue, comprising primary tumors, solid-tissue normals, and one metastatic sample.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; bulk, single-cell, spatial, and total-RNA subtype are not specified.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - The study concerns prostate adenocarcinoma, including primary tumor, normal, and metastatic states.
+  - - Experimental groups?
+    - Groups are primary tumor (505), solid-tissue normal (52), and metastatic (1).
+  - - Study population?
+    - The five examples are adult patients aged 46–70; sex and complete population details are not provided.
+  - - Experimental design?
+    - This is an observational tumor-versus-normal/metastatic comparison; pairing, treatment, and longitudinal
+      structure are not specified.
+  - - Sample count & distribution?
+    - 'There are 558 samples: 505 primary tumors, 52 solid-tissue normals, and 1 metastasis.'
+  - - Sample-level characteristics?
+    - All five examples are acinar-type primary tumors from core needle biopsies, with varied centers,
+      ages, stages, and collection timing.
+  - - Concise summary?
+    - TCGA contains 558 human prostate-tissue RNA-seq samples from prostate adenocarcinoma, mainly primary
+      tumors, with normal and metastatic comparators; design details are limited.
+COAD:
+  data_source: tcga
+  n_samples: 546
+  qna:
+  - - Sample/source type?
+    - Solid colorectal tissue, mainly colon primary tumors, with normal, metastatic, and recurrent samples.
+  - - Sequencing/assay type?
+    - RNA-seq; bulk versus single-cell and library subtype are not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Colon adenocarcinoma, with mostly primary tumors plus normal, metastatic, and recurrent samples.
+  - - Experimental groups?
+    - Primary tumor (503), solid tissue normal (41), metastatic (1), and recurrent tumor (1).
+  - - Study population?
+    - Sampled cases are adults aged 37–80; sex and complete-cohort age distribution are not provided.
+  - - Experimental design?
+    - Observational TCGA cohort with mixed tissue types; pairing, treatment, and longitudinal design are
+      not specified.
+  - - Sample count & distribution?
+    - '546 samples: 503 primary tumor, 41 solid tissue normal, 1 metastatic, and 1 recurrent.'
+  - - Sample-level characteristics?
+    - Samples vary by tumor stage, age, tissue type, sequencing platform, and prospective versus retrospective
+      collection.
+  - - Concise summary?
+    - TCGA human colon tissue RNA-seq cohort, mainly primary colon adenocarcinomas across stages; treatment
+      and pairing information are unavailable.
+LIHC:
+  data_source: tcga
+  n_samples: 424
+  qna:
+  - - Sample/source type?
+    - Solid liver tissue, including primary and recurrent tumors plus adjacent solid-tissue normal samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell or other specialized RNA-seq is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Liver hepatocellular carcinoma, with primary and recurrent tumors compared with solid-tissue normal
+      liver.
+  - - Experimental groups?
+    - Primary tumor, recurrent tumor, and solid-tissue normal groups.
+  - - Study population?
+    - Patient-derived samples; sampled ages are 25–76 years, while sex and the complete age distribution
+      are unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal design including recurrent tumors; pairing and longitudinal structure
+      are not specified.
+  - - Sample count & distribution?
+    - '424 samples: 371 primary tumors, 50 solid-tissue normals, and 3 recurrent tumors.'
+  - - Sample-level characteristics?
+    - Samples vary by tumor status, stage, histology, collection site, and specimen method; sampled tumors
+      are mostly stage I.
+  - - Concise summary?
+    - TCGA human liver-tissue RNA-seq dataset for hepatocellular carcinoma, comparing primary, recurrent,
+      and normal samples from adult patients; pairing and assay granularity are unspecified.
+READ:
+  data_source: tcga
+  n_samples: 177
+  qna:
+  - - Sample/source type?
+    - Solid colorectal/rectal tissue, including primary tumor, normal tissue, and recurrent tumor samples.
+  - - Sequencing/assay type?
+    - RNA-seq; bulk versus single-cell or total RNA-seq is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Rectal adenocarcinoma, with primary tumors, recurrent tumor, and solid-tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor (166), solid-tissue normal (10), and recurrent tumor (1).
+  - - Study population?
+    - Adult patients; sampled ages are 50–85 years, with sex and overall age distribution unavailable.
+  - - Experimental design?
+    - Observational cohort design with tumor, normal, and recurrent sample groups; treatment or longitudinal
+      structure is unspecified.
+  - - Sample count & distribution?
+    - '177 samples total: 166 primary tumors, 10 solid-tissue normals, and 1 recurrent tumor; subject
+      count is unavailable.'
+  - - Sample-level characteristics?
+    - All five sampled rows are primary tumors spanning stages I–IIIC, ages 50–85, multiple collection
+      sites, and Illumina GA or HiSeq platforms.
+  - - Concise summary?
+    - Human rectal adenocarcinoma tissue profiled by RNA-seq in an observational TCGA cohort of mainly
+      adult primary tumors, with normal and recurrent samples; assay subtype and subject pairing are unspecified.
+DRP001797:
+  data_source: sra
+  n_samples: 319
+  qna:
+  - - Sample/source type?
+    - Primary human vascular endothelial cells cultured from blood-vessel tissues.
+  - - Sequencing/assay type?
+    - RNA-seq; bulk, single-cell, spatial, and total-RNA subtype are not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Reference epigenome profiling without a single disease; donor causes of death vary.
+  - - Experimental groups?
+    - Vascular endothelial cell subtypes, including aortic, pulmonary, coronary, carotid, umbilical-vein,
+      and endocardial cells.
+  - - Study population?
+    - Adult donors aged 19–68 are represented; sex and broader population details are unavailable.
+  - - Experimental design?
+    - Descriptive reference profiling across independent primary-cell lots, not a specified case-control
+      or treatment design.
+  - - Sample count & distribution?
+    - 319 samples total; group-wise distribution cannot be determined from the provided metadata.
+  - - Sample-level characteristics?
+    - Samples vary by endothelial subtype, donor age, lot, collection context, and recorded cause of death
+      or disease.
+  - - Concise summary?
+    - A 319-sample human RNA-seq reference dataset of primary vascular endothelial cells across vessel
+      types; design and RNA-seq subtype are unspecified.
+SRP132726:
+  data_source: sra
+  n_samples: 2260
+  qna:
+  - - Sample/source type?
+    - Cultured Huh7 human cell line samples.
+  - - Sequencing/assay type?
+    - Virus-inclusive single-cell RNA-seq (viscRNA-seq).
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Dengue and Zika flavivirus infection in cultured Huh7 cells.
+  - - Experimental groups?
+    - Groups include dengue versus Zika exposure, infected versus uninfected cells, and varying multiplicity
+      of infection.
+  - - Study population?
+    - The population is a cultured Huh7 cell line; donor age and sex are unavailable.
+  - - Experimental design?
+    - Comparative single-cell infection design with dengue or Zika, variable MOI, and infected versus
+      uninfected cells.
+  - - Sample count & distribution?
+    - There are 2,260 samples; overall group distribution is unavailable, while five shown include three
+      Zika and two dengue samples.
+  - - Sample-level characteristics?
+    - Samples vary by virus, MOI, viral RNA molecules, and virus-qPCR measurements, with both zero- and
+      positive-virus cells.
+  - - Concise summary?
+    - This dataset profiles human Huh7 cells by virus-inclusive single-cell RNA-seq during dengue/Zika
+      infection; clinical population details are unavailable.
+ERP108653:
+  data_source: sra
+  n_samples: 2687
+  qna:
+  - - Sample/source type?
+    - H9 human embryonic stem cells cultured as a cell line.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using Smart-seq2 and Illumina paired-end sequencing.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Normal human embryonic stem cells compared in naive and primed states.
+  - - Experimental groups?
+    - Naive versus primed H9 embryonic stem-cell states with doxycycline-inducible NANOG and KLF2 transgenes.
+  - - Study population?
+    - H9 embryonic stem-cell line; sex, age, and patient status are unavailable.
+  - - Experimental design?
+    - Comparative phenotype design across three independent culture batches.
+  - - Sample count & distribution?
+    - 2,687 samples total; group-wise distribution between naive and primed states is unavailable.
+  - - Sample-level characteristics?
+    - Samples consistently represent normal H9 embryonic stem cells with inducible NANOG/KLF2 transgenes
+      across distinct runs.
+  - - Concise summary?
+    - Human H9 embryonic stem-cell single-cell Smart-seq2 RNA-seq compares naive and primed states across
+      independent culture batches; demographics are unavailable.
+SRP270799:
+  data_source: sra
+  n_samples: 2256
+  qna:
+  - - Sample/source type?
+    - Post-mortem central nervous system tissue, including brain regions and spinal cord.
+  - - Sequencing/assay type?
+    - RNA-seq is specified; bulk versus single-cell format cannot be determined.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Frontotemporal dementia and ALS-spectrum disease, including TDP-43 pathology, compared with controls.
+  - - Experimental groups?
+    - ALS-spectrum MND, ALS/ALS-FTD, FTLD-TDP, FTLD-tau, and non-neurological control groups.
+  - - Study population?
+    - Post-mortem human donors; age and sex are not provided.
+  - - Experimental design?
+    - Observational cross-sectional comparison of post-mortem tissues across disease groups and controls.
+  - - Sample count & distribution?
+    - 2256 samples total; exact distribution across groups cannot be determined from the metadata.
+  - - Sample-level characteristics?
+    - Samples vary by CNS region, disease group, control status, and manual versus automated KAPA Total
+      library preparation.
+  - - Concise summary?
+    - Human post-mortem brain and spinal-cord RNA-seq compares ALS/FTD-related TDP-43 pathology with controls;
+      age, sex, and group counts are unavailable.
+ERP012914:
+  data_source: sra
+  n_samples: 1866
+  qna:
+  - - Sample/source type?
+    - 'Cell culture: human HAP1 cell line.'
+  - - Sequencing/assay type?
+    - Bulk shallow transcriptomic RNA-seq using the QuantSeq protocol.
+  - - Organism/species?
+    - Homo sapiens.
+  - - Disease/condition/state?
+    - Genetic and environmental perturbation of HAP1 cells; no disease condition is specified.
+  - - Experimental groups?
+    - Wildtype or kinase-knockout cells, unstimulated or exposed to diverse polypeptides and small molecules.
+  - - Study population?
+    - Human HAP1 cell lines; age, sex, and donor information are unavailable.
+  - - Experimental design?
+    - Multiperturbation experiment with knockout versus wildtype, stimulation conditions, and biological
+      replicates.
+  - - Sample count & distribution?
+    - 1,866 samples are represented; group-wise distribution cannot be determined from the supplied metadata.
+  - - Sample-level characteristics?
+    - Samples vary by kinase knockout, stimulant, unstimulated control, replicate, and 96-well plate position.
+  - - Concise summary?
+    - Human HAP1 cell-line QuantSeq RNA-seq profiles kinase knockouts and wildtype cells after stimulation;
+      disease relevance and demographics are unspecified.
+BRCA:
+  data_source: tcga
+  n_samples: 1256
+  qna:
+  - - Sample/source type?
+    - Solid breast tissue, including primary tumor, normal breast tissue, and metastatic samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk, single-cell, or spatial status is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Breast invasive carcinoma, with primary tumors, metastatic samples, and solid tissue normals.
+  - - Experimental groups?
+    - Primary tumor, solid tissue normal, and metastatic sample groups.
+  - - Study population?
+    - Adult patients; sampled ages are 36–72 years, with sex and overall age range unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal/metastatic comparison; treatment, longitudinal, and pairing information
+      are unavailable.
+  - - Sample count & distribution?
+    - 'There are 1,256 samples: 1,127 primary tumors, 112 solid tissue normals, and 7 metastases.'
+  - - Sample-level characteristics?
+    - Samples vary by tissue type, collection site, histology, diagnosis year, age, and pathologic stage.
+  - - Concise summary?
+    - This is human breast tissue RNA-seq from adult breast cancer patients, comparing tumors, normals,
+      and metastases without specified pairing or treatment.
+BREAST:
+  data_source: gtex
+  n_samples: 482
+  qna:
+  - - Sample/source type?
+    - Solid breast mammary tissue.
+  - - Sequencing/assay type?
+    - The sequencing or assay type cannot be determined from the metadata.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease, treatment, and health status are not specified.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - Donor ages shown are 30–69 years, with both recorded sex codes represented.
+  - - Experimental design?
+    - The experimental design cannot be determined from the metadata.
+  - - Sample count & distribution?
+    - There are 482 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Sampled rows represent distinct donors with breast tissue, ages 30–69, and recorded sex codes 1
+      or 2.
+  - - Concise summary?
+    - This is a 482-sample human breast-tissue dataset with unspecified RNA assay, disease status, design,
+      and donor population details.
+ADIPOSE_TISSUE:
+  data_source: gtex
+  n_samples: 1293
+  qna:
+  - - Sample/source type?
+    - Subcutaneous adipose tissue.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but bulk versus single-cell cannot be determined.
+  - - Organism/species?
+    - Human (Homo sapiens) samples.
+  - - Disease/condition/state?
+    - Disease status and biological condition are not specified.
+  - - Experimental groups?
+    - All samples represent subcutaneous adipose tissue, with no stated comparison groups.
+  - - Study population?
+    - Adult donors are represented, with sampled ages 40–69 and both coded sexes.
+  - - Experimental design?
+    - The metadata supports an observational design, with no treatment, time-course, or pairing information.
+  - - Sample count & distribution?
+    - There are 1,293 samples, all annotated as subcutaneous adipose tissue; subject-level distribution
+      is unclear.
+  - - Sample-level characteristics?
+    - Samples vary by donor, age bin, coded sex, and sequencing run, while tissue subtype is consistent.
+  - - Concise summary?
+    - This is a human subcutaneous adipose RNA-seq dataset from adult donors; disease status, assay subtype,
+      and experimental design are unspecified.
+BLCA:
+  data_source: tcga
+  n_samples: 433
+  qna:
+  - - Sample/source type?
+    - Solid bladder tissue, comprising primary tumor and solid tissue normal samples.
+  - - Sequencing/assay type?
+    - Bulk RNA-seq generated on the Illumina HiSeq platform.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Bladder urothelial carcinoma, including primary tumors and solid tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor (414) and solid tissue normal (19) groups.
+  - - Study population?
+    - Predominantly adult human patients; sampled ages are 47–84 years, and sex is not provided.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison; pairing and longitudinal structure are not specified.
+  - - Sample count & distribution?
+    - '433 samples total: 414 primary tumors and 19 solid tissue normal samples.'
+  - - Sample-level characteristics?
+    - The five sampled rows are all primary tumors spanning stages II–IV, mostly non-papillary, with TURBT
+      or biopsy collection.
+  - - Concise summary?
+    - TCGA bulk RNA-seq of human bladder tissue compares urothelial carcinoma tumors with normal tissue;
+      detailed population and pairing information are limited.
+BLOOD:
+  data_source: gtex
+  n_samples: 1048
+  qna:
+  - - Sample/source type?
+    - Whole blood samples.
+  - - Sequencing/assay type?
+    - The sequencing or RNA assay type cannot be determined from the metadata.
+  - - Organism/species?
+    - The samples are from Homo sapiens (human).
+  - - Disease/condition/state?
+    - Disease, treatment, and health status are not specified.
+  - - Experimental groups?
+    - No experimental groups are identified.
+  - - Study population?
+    - The sampled individuals are adults aged 50–69 years, with sex recorded using numeric codes.
+  - - Experimental design?
+    - The experimental design cannot be determined from the metadata.
+  - - Sample count & distribution?
+    - There are 1,048 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples are whole blood from distinct subjects, with ages 50–69 and coded sex values; one sampled
+      row lacks a run accession.
+  - - Concise summary?
+    - This dataset contains 1,048 human whole-blood RNA samples from adults, but assay type, disease status,
+      groups, and design are unspecified.
+BLOOD_VESSEL:
+  data_source: gtex
+  n_samples: 1398
+  qna:
+  - - Sample/source type?
+    - Solid tissue, specifically tibial artery.
+  - - Sequencing/assay type?
+    - The RNA-sequencing assay subtype is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Tibial artery donor tissue; disease or health status is not specified.
+  - - Experimental groups?
+    - No experimental groups are identified in the metadata.
+  - - Study population?
+    - Adult donors, with sampled ages of 30–59 years and both recorded sex codes.
+  - - Experimental design?
+    - An observational donor-sampling design is indicated; pairing, treatment, and time course are unspecified.
+  - - Sample count & distribution?
+    - There are 1,398 samples; group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples consistently represent tibial artery tissue from donors aged 30–59 with recorded sex codes
+      1 or 2.
+  - - Concise summary?
+    - This is a 1,398-sample human GTEx tibial artery dataset; RNA subtype, disease status, and design
+      details are unspecified.
+BRAIN:
+  data_source: gtex
+  n_samples: 2931
+  qna:
+  - - Sample/source type?
+    - Solid brain cortex tissue from human donors.
+  - - Sequencing/assay type?
+    - RNA-seq data are indicated, but bulk, single-cell, and library type are unspecified.
+  - - Organism/species?
+    - Homo sapiens.
+  - - Disease/condition/state?
+    - Disease status and biological condition are not specified.
+  - - Experimental groups?
+    - No experimental groups are defined; samples are identified as brain cortex.
+  - - Study population?
+    - Sampled individuals span ages 20–69, with sex recorded as code 1 in all five rows.
+  - - Experimental design?
+    - The design cannot be determined from the metadata.
+  - - Sample count & distribution?
+    - There are 2,931 samples, with no group-wise distribution provided.
+  - - Sample-level characteristics?
+    - All shown samples are brain cortex specimens from distinct donors, spanning ages 20–69.
+  - - Concise summary?
+    - This dataset contains 2,931 human brain cortex RNA-seq samples; assay subtype, disease status, groups,
+      and design are unspecified.
+COLON:
+  data_source: gtex
+  n_samples: 822
+  qna:
+  - - Sample/source type?
+    - Solid tissue, specifically transverse colon.
+  - - Sequencing/assay type?
+    - The sequencing or assay type cannot be determined from the provided metadata.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - No disease, treatment, or biological state is specified.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - Adult human donors aged 20–69; sex is recorded using unmapped codes.
+  - - Experimental design?
+    - Experimental design cannot be determined from the provided metadata.
+  - - Sample count & distribution?
+    - 822 samples total; distribution across groups is unavailable.
+  - - Sample-level characteristics?
+    - All sampled rows represent transverse colon from individual donors with varying ages and coded sexes.
+  - - Concise summary?
+    - An 822-sample human transverse-colon dataset with unspecified RNA assay, disease status, groups,
+      and experimental design.
+DRP000987:
+  data_source: sra
+  n_samples: 114
+  qna:
+  - - Sample/source type?
+    - Peripheral blood from malaria patients, with no finer blood-cell subtype specified.
+  - - Sequencing/assay type?
+    - Bulk RNA-seq of mixed human and Plasmodium falciparum transcripts.
+  - - Organism/species?
+    - Human patients infected with Plasmodium falciparum.
+  - - Disease/condition/state?
+    - Malaria infection in patients, with clinical severity reflected by temperature and illness duration.
+  - - Experimental groups?
+    - Malaria patients grouped by clinical characteristics or severity; no healthy control group is specified.
+  - - Study population?
+    - Indonesian patients of both sexes; sampled ages range from 6 to 55 years in the five rows.
+  - - Experimental design?
+    - Observational, apparently cross-sectional profiling with clinical-feature comparisons; treatment
+      or longitudinal pairing is unspecified.
+  - - Sample count & distribution?
+    - 114 samples total; group-wise distribution is not provided.
+  - - Sample-level characteristics?
+    - All five samples are malaria-patient peripheral blood RNA, varying by age, sex, location, temperature,
+      and illness days.
+  - - Concise summary?
+    - Bulk mixed-transcriptome RNA-seq of peripheral blood from 114 Indonesian malaria patients, profiling
+      human–P. falciparum interactions; detailed group design is unspecified.
+ERP017126:
+  data_source: sra
+  n_samples: 3514
+  qna:
+  - - Sample/source type?
+    - Human pancreatic primary islets and tissue-derived cells.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using full-length Smart-seq2 libraries.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Healthy and type 2 diabetes pancreatic samples from cadaveric donors.
+  - - Experimental groups?
+    - Normal/healthy versus type 2 diabetes groups.
+  - - Study population?
+    - Ten cadaveric donors include six healthy and four T2D donors; ages sampled range from 22 to 57 years.
+  - - Experimental design?
+    - Cross-sectional case-control design using dissociated, FACS-isolated single cells.
+  - - Sample count & distribution?
+    - 3,514 single-cell libraries from 10 donors; six healthy and four T2D donors, with group cell counts
+      unavailable.
+  - - Sample-level characteristics?
+    - Samples vary by endocrine cell type, including alpha and gamma cells, donor age, BMI, and diabetes
+      status.
+  - - Concise summary?
+    - Human pancreatic primary-islet single-cell Smart-seq2 RNA-seq compares healthy and T2D cadaveric
+      donors; sex is unavailable.
+ERP104512:
+  data_source: sra
+  n_samples: 1908
+  qna:
+  - - Sample/source type?
+    - Samples are immune cells from skin, colon, and peripheral blood mononuclear cells (PBMCs).
+  - - Sequencing/assay type?
+    - This is single-cell RNA-seq using Smart-seq2 libraries and paired-end Illumina sequencing.
+  - - Organism/species?
+    - The project organism is listed as Homo sapiens, although the study title describes both human and
+      mouse samples.
+  - - Disease/condition/state?
+    - The samples are normal, healthy-state CD4+ Treg and memory T cells without a reported disease.
+  - - Experimental groups?
+    - Main groups are CD4+ regulatory T cells, central memory T cells, and effector memory T cells across
+      tissues.
+  - - Study population?
+    - Human samples are described, but age and sex are unavailable; the study also includes mouse samples
+      by title.
+  - - Experimental design?
+    - This is a cross-tissue, cross-species single-cell comparison of immune-cell populations.
+  - - Sample count & distribution?
+    - There are 1,908 samples, but group-specific counts cannot be determined from the metadata.
+  - - Sample-level characteristics?
+    - Sample rows include normal Treg, central-memory, and effector-memory CD4+ T cells, with one colon-associated
+      sample and unavailable ages.
+  - - Concise summary?
+    - This dataset profiles normal CD4+ Treg and memory T cells by single-cell RNA-seq across human and
+      mouse tissues, with detailed group counts unavailable.
+ERP107748:
+  data_source: sra
+  n_samples: 7598
+  qna:
+  - - Sample/source type?
+    - Solid reproductive tissue, primarily decidua-derived cells from the fetal–maternal interface.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using plate-based Smart-seq2 and paired-end Illumina sequencing.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Normal first-trimester pregnancies from elective terminations, without an indicated disease.
+  - - Experimental groups?
+    - FACS-defined cell populations, including M, NK, and T gating groups.
+  - - Study population?
+    - Pregnant individuals with normal pregnancies at 6–12 weeks’ gestation; additional age and sex details
+      are unavailable.
+  - - Experimental design?
+    - Cross-sectional FACS-sorted single-cell profiling of first-trimester decidual cells.
+  - - Sample count & distribution?
+    - 7,598 samples are represented; group-wise distribution is not provided.
+  - - Sample-level characteristics?
+    - Sample rows consistently indicate normal 6–12-week gestation and FACS gates labeled M, NK, or T.
+  - - Concise summary?
+    - Human Smart-seq2 single-cell RNA-seq of FACS-sorted first-trimester decidual cells from normal pregnancies;
+      detailed group sizes are unavailable.
+ERP109920:
+  data_source: sra
+  n_samples: 1920
+  qna:
+  - - Sample/source type?
+    - Cultured primary human dermal fibroblasts.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using Smart-seq2 and Illumina paired-end sequencing.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Normal fibroblasts stimulated with synthetic dsRNA poly I:C.
+  - - Experimental groups?
+    - Poly I:C exposure for 30 minutes, 1 hour, or continuously, sampled at 2, 4, and 6 hours.
+  - - Study population?
+    - One adult human donor aged 40–44; sex is not reported.
+  - - Experimental design?
+    - Three-condition stimulated time course with differential dsRNA removal.
+  - - Sample count & distribution?
+    - 1,920 single-cell samples; exact distribution across conditions and time points is unavailable.
+  - - Sample-level characteristics?
+    - The sampled cells are normal dermal fibroblasts from one adult human, profiled by Smart-seq2 single-cell
+      RNA-seq across poly I:C stimulation and time-course conditions.
+  - - Concise summary?
+    - ''
+ESCA:
+  data_source: tcga
+  n_samples: 198
+  qna:
+  - - Sample/source type?
+    - Esophageal solid tissue, mainly primary tumor, with solid-tissue normal and metastatic samples.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; bulk versus single-cell sequencing is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Esophageal carcinoma, including primary tumors, solid-tissue normals, and one metastatic sample.
+  - - Experimental groups?
+    - Primary tumor (184), solid-tissue normal (13), and metastatic (1).
+  - - Study population?
+    - Adult patients are represented; the five examples range from 51 to 83 years.
+  - - Experimental design?
+    - Observational sample-type comparison without indicated treatment, stimulation, or longitudinal pairing.
+  - - Sample count & distribution?
+    - '198 samples: 184 primary tumors, 13 solid-tissue normals, and 1 metastatic sample.'
+  - - Sample-level characteristics?
+    - The sampled tumors are mostly distal esophageal lesions, with stages IA–IIIA and biopsy or resection
+      collection.
+  - - Concise summary?
+    - TCGA human esophageal tissue RNA-seq dataset with 198 samples, mainly primary tumors plus normals
+      and metastasis; treatment design is unspecified.
+ESOPHAGUS:
+  data_source: gtex
+  n_samples: 1577
+  qna:
+  - - Sample/source type?
+    - Esophageal mucosa, a solid tissue sample.
+  - - Sequencing/assay type?
+    - The sequencing assay subtype is not specified in the metadata.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease status or other biological condition is not specified.
+  - - Experimental groups?
+    - No experimental groups are identified.
+  - - Study population?
+    - Human donors include adults aged 30–59 in the sampled rows, with sex codes 1 and 2.
+  - - Experimental design?
+    - The experimental design is not specified.
+  - - Sample count & distribution?
+    - There are 1,577 samples; group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples are esophageal mucosa from individual donors, with ages and sex codes varying across examples.
+  - - Concise summary?
+    - A 1,577-sample human esophageal-mucosa RNA dataset with unspecified assay subtype, disease status,
+      groups, and design.
+GBM:
+  data_source: tcga
+  n_samples: 175
+  qna:
+  - - Sample/source type?
+    - Brain tissue, primarily glioblastoma tumor tissue.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell cannot be determined.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Glioblastoma multiforme, including primary and recurrent tumors plus solid-tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor, recurrent tumor, and solid-tissue normal groups.
+  - - Study population?
+    - Adult patients; sampled ages are 34–70 years, with sex unavailable.
+  - - Experimental design?
+    - Observational, unpaired comparison of primary, recurrent, and normal tissues; pairing is not reported.
+  - - Sample count & distribution?
+    - '175 samples: 157 primary tumors, 13 recurrent tumors, and 5 solid-tissue normals.'
+  - - Sample-level characteristics?
+    - All five sampled rows are untreated primary de novo GBM collected by tumor resection across multiple
+      sites.
+  - - Concise summary?
+    - This is a human Illumina RNA-seq dataset of adult brain tissues comparing primary and recurrent
+      GBM with solid-tissue normals; pairing and bulk status are unspecified.
+HEART:
+  data_source: gtex
+  n_samples: 942
+  qna:
+  - - Sample/source type?
+    - Solid heart tissue, specifically the left ventricle.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but whether it is bulk, single-cell, or another subtype is unspecified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - The biological condition and disease status are not specified.
+  - - Experimental groups?
+    - A single heart-left-ventricle tissue group is represented.
+  - - Study population?
+    - Adult donors are represented, with sampled ages 50–79 and sex recorded using coded values.
+  - - Experimental design?
+    - The design appears observational and cross-sectional, with pairing or longitudinal structure unspecified.
+  - - Sample count & distribution?
+    - There are 942 samples in one tissue group; subject-level distribution beyond sampled rows is unspecified.
+  - - Sample-level characteristics?
+    - Samples consistently represent heart left ventricle, with unique donors, ages 50–79, and coded sex
+      values.
+  - - Concise summary?
+    - This is a 942-sample human GTEx heart-left-ventricle RNA-seq collection from adults; disease status,
+      assay subtype, and detailed design are unspecified.
+HNSC:
+  data_source: tcga
+  n_samples: 548
+  qna:
+  - - Sample/source type?
+    - Solid head-and-neck tissue, including primary tumors, solid-tissue normals, and metastatic samples.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; single-cell, spatial, and total-RNA status are not specified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Head and neck squamous cell carcinoma, including primary tumors, normal tissue, and metastases.
+  - - Experimental groups?
+    - Primary tumor (502), solid tissue normal (44), and metastatic (2) samples.
+  - - Study population?
+    - Patients represented in sampled rows were adults aged 42–80 years; sex and complete age distribution
+      are unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison including metastatic samples; pairing and longitudinal
+      structure are unspecified.
+  - - Sample count & distribution?
+    - '548 samples: 502 primary tumors, 44 solid-tissue normals, and 2 metastatic samples.'
+  - - Sample-level characteristics?
+    - The five examples include three primary tumors and two normals, stages II–IVA, ages 42–80, and multiple
+      collection sites.
+  - - Concise summary?
+    - TCGA human head-and-neck RNA-seq compares primary tumors, normals, and metastases; adult population
+      details and pairing are unavailable.
+KIRC:
+  data_source: tcga
+  n_samples: 618
+  qna:
+  - - Sample/source type?
+    - Solid kidney tissue, including primary tumor and solid-tissue normal samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; library type such as bulk or specialized RNA-seq is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Kidney renal clear cell carcinoma, with primary tumors and solid-tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor (543), solid-tissue normal (72), and additional new primary (1).
+  - - Study population?
+    - Adult patients are represented; sampled ages range from 52–76 years, but total cohort demographics
+      are unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison; pairing and longitudinal structure are not specified.
+  - - Sample count & distribution?
+    - 'There are 618 samples: 543 primary tumors, 72 solid-tissue normals, and 1 additional new primary.'
+  - - Sample-level characteristics?
+    - The five examples include three primary tumors and two solid-tissue normals, spanning stages I–II,
+      ages 52–76, and multiple collection sites.
+  - - Concise summary?
+    - TCGA human kidney RNA-seq from clear cell carcinoma tumors and normal tissue, with observational
+      design and limited population details.
+KIRP:
+  data_source: tcga
+  n_samples: 323
+  qna:
+  - - Sample/source type?
+    - Solid kidney tissue, including primary tumors and solid-tissue normal samples.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-Seq, with the specific RNA-seq subtype unspecified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Kidney renal papillary cell carcinoma, with primary tumor and normal kidney samples.
+  - - Experimental groups?
+    - Primary tumor, solid-tissue normal, and additional-new-primary groups.
+  - - Study population?
+    - Human patients; sampled-row ages are 56–83 years, with sex and broader demographics unspecified.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison without treatment or time-course information.
+  - - Sample count & distribution?
+    - '323 samples: 290 primary tumors, 32 solid-tissue normals, and 1 additional-new-primary sample.'
+  - - Sample-level characteristics?
+    - All five sampled rows are stage-I primary tumors from five sites, with ages 56–83 and diagnosis
+      years 2002–2011.
+  - - Concise summary?
+    - TCGA Illumina HiSeq RNA-Seq of human kidney papillary carcinoma and normal kidney, comparing tumors
+      with normals; bulk status is unspecified.
+LAML:
+  data_source: tcga
+  n_samples: 178
+  qna:
+  - - Sample/source type?
+    - Bone marrow aspirates containing primary blood-derived leukemia cells.
+  - - Sequencing/assay type?
+    - RNA-seq; bulk versus single-cell sequencing is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Acute myeloid leukemia in diseased cancer samples, with no healthy comparison group identified.
+  - - Experimental groups?
+    - All identified samples are primary acute myeloid leukemia specimens; no treatment or control groups
+      are specified.
+  - - Study population?
+    - Sampled cases are adults aged 22–61 years where reported; sex and complete age information are unavailable.
+  - - Experimental design?
+    - Observational disease cohort with no specified case-control, treatment, longitudinal, or paired
+      design.
+  - - Sample count & distribution?
+    - There are 178 samples total; 126 are identified as primary blood-derived cancer peripheral-blood
+      samples, with other distributions unavailable.
+  - - Sample-level characteristics?
+    - Samples vary in age, blast percentage, immunophenotype, and sequencing platform; most are annotated
+      as acute myeloid leukemia.
+  - - Concise summary?
+    - This is human AML RNA-seq from bone marrow or peripheral-blood-derived cancer specimens, mainly
+      adults, without specified comparison groups or design.
+LGG:
+  data_source: tcga
+  n_samples: 532
+  qna:
+  - - Sample/source type?
+    - Solid brain tumor tissue, specifically lower-grade glioma specimens.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; bulk versus single-cell or total RNA-seq is not specified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Brain lower-grade glioma, including primary and recurrent tumors.
+  - - Experimental groups?
+    - Primary tumor samples (514) and recurrent tumor samples (18).
+  - - Study population?
+    - Human tumor patients; sampled ages are 22–47 years, while cohort-wide sex and age range are unspecified.
+  - - Experimental design?
+    - Observational cohort with primary and recurrent tumor categories; pairing and longitudinal structure
+      are unspecified.
+  - - Sample count & distribution?
+    - '532 samples total: 514 primary tumors and 18 recurrent tumors; subject count is unspecified.'
+  - - Sample-level characteristics?
+    - All five sampled rows are primary tumors, spanning astrocytoma, oligodendroglioma, and oligoastrocytoma
+      from multiple sites.
+  - - Concise summary?
+    - Human brain lower-grade glioma tumor-tissue RNA-seq dataset with primary and recurrent tumors; cohort-wide
+      demographics and bulk status are unspecified.
+LUAD:
+  data_source: tcga
+  n_samples: 601
+  qna:
+  - - Sample/source type?
+    - Solid lung tissue, comprising primary tumor, recurrent tumor, and solid-tissue normal samples.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; whether it is bulk, single-cell, or total RNA-seq is unspecified.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - Lung adenocarcinoma, including primary and recurrent tumors, with solid-tissue normal samples.
+  - - Experimental groups?
+    - Groups are primary tumor (540), solid-tissue normal (59), and recurrent tumor (2).
+  - - Study population?
+    - Adult human patients; sampled ages are 60–79 years, but overall age and sex distributions are unavailable.
+  - - Experimental design?
+    - Comparative tumor-versus-normal observational design with recurrent tumors included; pairing and
+      longitudinal sampling are unspecified.
+  - - Sample count & distribution?
+    - 'There are 601 samples: 540 primary tumors, 59 solid-tissue normals, and 2 recurrent tumors.'
+  - - Sample-level characteristics?
+    - Sampled cases span stages IB–IIIA, ages 60–79, NOS or mixed histology, and prospective or retrospective
+      collection.
+  - - Concise summary?
+    - Human lung-tissue RNA-seq from adult lung adenocarcinoma patients compares primary, recurrent, and
+      normal samples; bulk status and pairing are unspecified.
+LUNG:
+  data_source: gtex
+  n_samples: 655
+  qna:
+  - - Sample/source type?
+    - Solid lung tissue.
+  - - Sequencing/assay type?
+    - This is RNA-seq, but the metadata does not specify bulk, single-cell, spatial, or small-RNA format.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - No disease or treatment status is specified; these are GTEx lung samples.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - The listed donors are adults aged 50–69, with sex recorded.
+  - - Experimental design?
+    - The metadata does not specify a case-control, treatment, paired, or longitudinal design.
+  - - Sample count & distribution?
+    - There are 655 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - All five rows are lung samples from distinct donors, spanning ages 50–69 and recorded sex values
+      1 and 2.
+  - - Concise summary?
+    - Human lung RNA-seq from 655 GTEx donor samples, with disease status, assay subtype, groups, and
+      design unspecified.
+LUSC:
+  data_source: tcga
+  n_samples: 555
+  qna:
+  - - Sample/source type?
+    - Solid lung tissue, comprising primary tumor and solid-tissue normal samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; whether bulk or single-cell is not specified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Lung squamous cell carcinoma with primary tumors and solid-tissue normal comparators.
+  - - Experimental groups?
+    - Primary Tumor (504) and Solid Tissue Normal (51).
+  - - Study population?
+    - Human TCGA cases; sampled individuals are adults aged 57–73, with overall sex and age distribution
+      unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison; pairing, treatment, and longitudinal structure are
+      not specified.
+  - - Sample count & distribution?
+    - '555 samples total: 504 primary tumors and 51 solid-tissue normal samples.'
+  - - Sample-level characteristics?
+    - The five examples are primary tumors spanning stages IB–IIIB, multiple collection sites, and mostly
+      NOS histology.
+  - - Concise summary?
+    - Human TCGA lung RNA-seq compares adult LUSC primary tumors with normal tissue; experimental bulk
+      status is unspecified.
+NERVE:
+  data_source: gtex
+  n_samples: 659
+  qna:
+  - - Sample/source type?
+    - Solid tibial nerve tissue.
+  - - Sequencing/assay type?
+    - Bulk RNA-seq.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease or health status is not specified.
+  - - Experimental groups?
+    - One tibial-nerve tissue cohort with no experimental groups indicated.
+  - - Study population?
+    - Adult human donors; sampled ages include 20–29, 40–49, and 50–59 years, with both coded sexes.
+  - - Experimental design?
+    - Observational cross-sectional donor sampling; treatment, time-course, and pairing are not indicated.
+  - - Sample count & distribution?
+    - 659 total samples, all classified as tibial nerve; subgroup distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples vary by donor, age range, and coded sex; the five donors are distinct.
+  - - Concise summary?
+    - GTEx provides 659 human tibial-nerve tissue samples for bulk RNA-seq, with observational design
+      and unspecified disease status.
+OV:
+  data_source: tcga
+  n_samples: 430
+  qna:
+  - - Sample/source type?
+    - Solid ovarian tumor tissue, including primary and recurrent tumors.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell format is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Ovarian serous cystadenocarcinoma, representing diseased tumor samples.
+  - - Experimental groups?
+    - Primary tumors predominate, with a smaller recurrent-tumor group.
+  - - Study population?
+    - Adult ovarian cancer patients; sampled ages are 48–71 years, with sex not reported.
+  - - Experimental design?
+    - Observational tumor cohort comparing primary and recurrent tumors; treatment, pairing, and longitudinal
+      design are not specified.
+  - - Sample count & distribution?
+    - '430 samples total: 422 primary tumors, 7 recurrent tumors, and 1 not classified by the provided
+      counts.'
+  - - Sample-level characteristics?
+    - All five sampled rows are primary ovarian tumors, spanning ages 48–71, stages IIIC–IV, and multiple
+      collection sites and methods.
+  - - Concise summary?
+    - TCGA human ovarian serous cystadenocarcinoma tumor RNA-seq cohort of adults, mainly primary tumors
+      with seven recurrent tumors; detailed assay format and design are unspecified.
+OVARY:
+  data_source: gtex
+  n_samples: 195
+  qna:
+  - - Sample/source type?
+    - Solid ovary tissue samples from Homo sapiens.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but bulk, single-cell, and library type are unspecified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Ovary tissue is studied; disease status and health status are not specified.
+  - - Experimental groups?
+    - No experimental groups or treatment conditions are identified.
+  - - Study population?
+    - GTEx donors aged 20–69 in sampled rows; sex encoding and broader demographics are unspecified.
+  - - Experimental design?
+    - An observational tissue-sampling design is implied, without stated pairing, longitudinal sampling,
+      or intervention.
+  - - Sample count & distribution?
+    - There are 195 samples; group-wise distribution and unique-subject count are not provided.
+  - - Sample-level characteristics?
+    - All sampled rows are ovary specimens from distinct GTEx donor identifiers, with ages spanning 20–69.
+  - - Concise summary?
+    - This is a 195-sample human ovary RNA-seq dataset from GTEx donors, with unspecified assay modality,
+      disease status, and design.
+PAAD:
+  data_source: tcga
+  n_samples: 183
+  qna:
+  - - Sample/source type?
+    - Solid pancreatic tissue, predominantly primary tumor samples, with a few normal and metastatic specimens.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell format is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Pancreatic ductal adenocarcinoma, including primary tumors, solid-tissue normals, and one metastatic
+      sample.
+  - - Experimental groups?
+    - Primary tumor (178), solid tissue normal (4), and metastatic (1) groups.
+  - - Study population?
+    - Adult patients; sampled ages are 50–75 years, while sex information is unavailable.
+  - - Experimental design?
+    - Observational cross-sectional TCGA cohort with tumor-type comparisons; treatment and longitudinal
+      design are not indicated.
+  - - Sample count & distribution?
+    - '183 samples: 178 primary tumors, 4 solid-tissue normals, and 1 metastatic sample.'
+  - - Sample-level characteristics?
+    - Sampled tumors are ductal adenocarcinomas, mostly stage IIB, with one stage IB case and varied collection
+      sites and methods.
+  - - Concise summary?
+    - Human pancreatic RNA-seq from an observational TCGA adenocarcinoma cohort, mainly adult primary
+      tumors with four normals and one metastasis; assay granularity is unspecified.
+PANCREAS:
+  data_source: gtex
+  n_samples: 360
+  qna:
+  - - Sample/source type?
+    - Solid pancreatic tissue from human donors.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but whether it is bulk, single-cell, or total RNA-seq is unspecified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease or treatment status is not specified.
+  - - Experimental groups?
+    - No experimental groups or stimulation or treatment conditions are specified.
+  - - Study population?
+    - Adult human donors are represented, with sampled ages of 30–69 years and both recorded sex codes.
+  - - Experimental design?
+    - Case-control, paired, longitudinal, and treatment-response designs are not specified.
+  - - Sample count & distribution?
+    - There are 360 samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples are from distinct donors and pancreas tissue, with ages 30–69 and both recorded sex codes
+      represented.
+  - - Concise summary?
+    - Human pancreatic tissue RNA-seq from 360 GTEx donors, with age and sex variation but unspecified
+      disease status, assay subtype, groups, and design.
+PCPG:
+  data_source: tcga
+  n_samples: 187
+  qna:
+  - - Sample/source type?
+    - Solid tissue, primarily adrenal gland tumor samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell assay is not specified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Pheochromocytoma and paraganglioma, predominantly tumor tissue with a small normal-tissue subset.
+  - - Experimental groups?
+    - Primary tumor is the dominant group, with additional primary, solid-tissue normal, and metastatic
+      groups.
+  - - Study population?
+    - Human samples include adults aged 30–76 among the five examples; sex and complete age distribution
+      are unavailable.
+  - - Experimental design?
+    - Observational TCGA cohort design; case-control, treatment, pairing, and longitudinal structure are
+      not specified.
+  - - Sample count & distribution?
+    - '187 samples: 179 primary tumors, 3 additional primaries, 3 normals, and 2 metastases.'
+  - - Sample-level characteristics?
+    - The five examples are primary tumors, mostly adrenal, with one extra-adrenal site and ages 30–76.
+  - - Concise summary?
+    - TCGA human tissue RNA-seq of pheochromocytoma and paraganglioma, mainly adrenal primary tumors;
+      detailed population and design information are unavailable.
+PITUITARY:
+  data_source: gtex
+  n_samples: 301
+  qna:
+  - - Sample/source type?
+    - Solid pituitary tissue.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but the specific assay type is unspecified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - No disease or biological condition is specified for this GTEx tissue cohort.
+  - - Experimental groups?
+    - No experimental groups or treatment conditions are specified.
+  - - Study population?
+    - Sampled donors include adults aged 30–69 and both recorded sex codes.
+  - - Experimental design?
+    - The experimental design is not specified in the metadata.
+  - - Sample count & distribution?
+    - There are 301 pituitary samples; distribution across groups is unavailable.
+  - - Sample-level characteristics?
+    - Examples are pituitary samples from distinct donors aged 30–69 with both recorded sex codes and
+      no treatment details.
+  - - Concise summary?
+    - This is a 301-sample human pituitary RNA dataset from GTEx, with unspecified assay subtype, disease
+      status, design, and full population details.
+PROSTATE:
+  data_source: gtex
+  n_samples: 263
+  qna:
+  - - Sample/source type?
+    - Solid prostate tissue from human donors.
+  - - Sequencing/assay type?
+    - The sequencing or RNA assay type is not specified.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - Prostate tissue is studied, but disease or health status is not specified.
+  - - Experimental groups?
+    - No experimental groups are specified in the metadata.
+  - - Study population?
+    - Adult donors are represented; sampled ages span 20–79 years, with sex coded as 1.
+  - - Experimental design?
+    - The experimental design is not specified.
+  - - Sample count & distribution?
+    - There are 263 samples; group-wise distribution cannot be determined.
+  - - Sample-level characteristics?
+    - Sampled rows represent prostate tissue from unique donors across age bins 20–79.
+  - - Concise summary?
+    - This dataset contains human prostate tissue from 263 adult donors, but assay type, disease status,
+      and design are unspecified.
+SALIVARY_GLAND:
+  data_source: gtex
+  n_samples: 178
+  qna:
+  - - Sample/source type?
+    - Minor salivary gland tissue, a solid tissue source.
+  - - Sequencing/assay type?
+    - RNA-seq assay subtype is not specified; bulk versus single-cell cannot be determined.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - Disease status or biological condition is not specified.
+  - - Experimental groups?
+    - No experimental groups are defined beyond minor salivary gland samples.
+  - - Study population?
+    - Human donors include adults aged 20–69 in the sampled rows, with both coded sexes represented.
+  - - Experimental design?
+    - The design is not specified, with no treatment, pairing, or time-course information provided.
+  - - Sample count & distribution?
+    - There are 178 samples; group-wise distribution cannot be determined beyond the shared tissue source.
+  - - Sample-level characteristics?
+    - The five sampled rows are distinct minor salivary gland specimens spanning ages 20–69 and sex codes
+      1 and 2.
+  - - Concise summary?
+    - This is a 178-sample human minor salivary gland RNA-seq dataset from adult donors, with assay subtype,
+      disease status, and design unspecified.
+SARC:
+  data_source: tcga
+  n_samples: 265
+  qna:
+  - - Sample/source type?
+    - Solid soft-tissue tumor tissue, with a small number of normal solid-tissue samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell is not specified.
+  - - Organism/species?
+    - Homo sapiens.
+  - - Disease/condition/state?
+    - Sarcoma, primarily primary tumors, with recurrent, metastatic, and normal tissue samples.
+  - - Experimental groups?
+    - Primary tumor, recurrent tumor, metastatic tumor, and solid-tissue normal groups.
+  - - Study population?
+    - Human sarcoma patients; shown ages range from 28 to 75 years, with sex and complete demographics
+      unavailable.
+  - - Experimental design?
+    - Observational cross-sectional cohort; treatment, longitudinal follow-up, and pairing are not specified.
+  - - Sample count & distribution?
+    - '265 samples: 259 primary tumors, 3 recurrent tumors, 2 normal tissues, and 1 metastatic sample.'
+  - - Sample-level characteristics?
+    - Shown samples are all primary tumors from varied anatomical sites, ages, collection centers, and
+      prospective or retrospective collections.
+  - - Concise summary?
+    - TCGA human soft-tissue sarcoma bulk RNA-seq cohort of 265 cross-sectional samples spanning tumor
+      and limited normal tissue groups.
+SKCM:
+  data_source: tcga
+  n_samples: 473
+  qna:
+  - - Sample/source type?
+    - Solid skin tissue, predominantly melanoma tumors (primary and metastatic), with one solid-tissue
+      normal sample.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; bulk versus single-cell sequencing is not specified.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - The study examines skin cutaneous melanoma, primarily metastatic and primary tumors.
+  - - Experimental groups?
+    - Groups include metastatic samples, primary tumors, solid-tissue normal, and additional metastatic
+      samples.
+  - - Study population?
+    - This is a TCGA patient cohort; available ages are adult, but sex and complete age distribution are
+      unspecified.
+  - - Experimental design?
+    - This is an observational comparison of primary and metastatic tumor samples without documented treatment
+      or longitudinal sampling.
+  - - Sample count & distribution?
+    - 'There are 473 samples: 367 metastatic, 103 primary tumor, 1 normal, and 1 additional metastatic;
+      one sample is unclassified.'
+  - - Sample-level characteristics?
+    - The five examples include three metastatic and two primary tumors, with regional-node or distant-metastasis
+      sites and stages I–IIIB.
+  - - Concise summary?
+    - This TCGA dataset contains human skin melanoma tissue RNA-seq from mostly adult patients, comparing
+      primary and metastatic tumors; treatment design is unspecified.
+SKIN:
+  data_source: gtex
+  n_samples: 1940
+  qna:
+  - - Sample/source type?
+    - 'Solid tissue: sun-exposed skin from the lower leg.'
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but bulk, single-cell, spatial, and library type are unspecified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - No disease, treatment, or health status is specified.
+  - - Experimental groups?
+    - A single tissue group comprises sun-exposed lower-leg skin samples.
+  - - Study population?
+    - Shown samples are ages 40–69 with sex code 1; broader population details are unavailable.
+  - - Experimental design?
+    - No treatment, time-course, pairing, or case-control design is specified.
+  - - Sample count & distribution?
+    - There are 1,940 samples, all assigned to the same skin tissue group.
+  - - Sample-level characteristics?
+    - Samples share sun-exposed lower-leg skin; shown ages vary and one subject contributes two samples.
+  - - Concise summary?
+    - GTEx human RNA-seq of sun-exposed lower-leg skin, with disease status, assay subtype, design, and
+      broader population unspecified.
+SPLEEN:
+  data_source: gtex
+  n_samples: 255
+  qna:
+  - - Sample/source type?
+    - Spleen tissue from human donors.
+  - - Sequencing/assay type?
+    - The sequencing or RNA assay type is not specified in the metadata.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - No disease or biological condition is specified.
+  - - Experimental groups?
+    - No experimental groups are defined; samples represent individual donors.
+  - - Study population?
+    - Adult donors are represented, with both sex codes and sampled ages of 40–69 years.
+  - - Experimental design?
+    - The design appears observational and donor-based, with no treatment, pairing, or time-course information.
+  - - Sample count & distribution?
+    - There are 255 samples, but group-wise distribution cannot be determined.
+  - - Sample-level characteristics?
+    - Samples are individual spleen specimens from unique donors, with varying sex codes and ages.
+  - - Concise summary?
+    - This is a 255-sample human donor spleen dataset, but the RNA-seq assay, disease status, and formal
+      design are unspecified.
+SRP025982:
+  data_source: sra
+  n_samples: 1720
+  qna:
+  - - Sample/source type?
+    - 'Reference RNA materials: pooled cell-line RNA, human brain RNA, their mixtures, and ERCC controls.'
+  - - Sequencing/assay type?
+    - Bulk RNA-seq for cross-platform, cross-site accuracy and reproducibility assessment.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - No disease is studied; this is a technical quality-control study using reference RNA and synthetic
+      spike-ins.
+  - - Experimental groups?
+    - Groups include UHRR, HBRR, 3:1 and 1:3 mixtures, and ERCC control mixes.
+  - - Study population?
+    - Reference RNA materials represent pooled cell lines and human brain, not identifiable subjects;
+      age and sex are unavailable.
+  - - Experimental design?
+    - The design assesses reproducibility and accuracy across sites, platforms, library preparations,
+      and defined RNA mixtures.
+  - - Sample count & distribution?
+    - There are 1,720 samples; exact group-wise counts cannot be determined from the metadata.
+  - - Sample-level characteristics?
+    - The sampled rows include four 1:3 A/B mixtures and one HBRR sample across sites, lanes, libraries,
+      and flowcells.
+  - - Concise summary?
+    - Human reference RNA bulk-seq data assess reproducibility across sites and platforms using mixed
+      controls; donor demographics are unavailable.
+SRP066781:
+  data_source: sra
+  n_samples: 3854
+  qna:
+  - - Sample/source type?
+    - Sorted human bone-marrow hematopoietic stem and progenitor cells (Lin−CD34+CD38− or Lin−CD34+CD38+).
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using modified Smart-seq2 and QUARTZ-seq protocols.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Healthy hematopoiesis, focusing on early hematopoietic stem and progenitor cells.
+  - - Experimental groups?
+    - Lin−CD34+CD38−, Lin−CD34+CD38+, and Lin−CD34+CD38−CD45RA−CD90+ cells.
+  - - Study population?
+    - Healthy human bone-marrow donors; individual ages and sexes are unavailable.
+  - - Experimental design?
+    - FACS-indexed, single-cell, phenotype-stratified sampling from three individuals, with ex-vivo culture
+      components.
+  - - Sample count & distribution?
+    - 3854 samples total; group-specific counts and subject-level distribution are unavailable.
+  - - Sample-level characteristics?
+    - Samples vary by HSPC phenotype, donor, plate or well, and recorded FACS marker intensities.
+  - - Concise summary?
+    - This is single-cell RNA-seq of healthy human bone-marrow HSPCs, FACS-indexed across phenotypes and
+      donors; ages and sexes are unavailable.
+SRP067759:
+  data_source: sra
+  n_samples: 2289
+  qna:
+  - - Sample/source type?
+    - Bone marrow-derived Lin-CD34+CD38− cells, with some K562 leukemia cell-line samples.
+  - - Sequencing/assay type?
+    - Single-cell whole-transcriptome RNA sequencing.
+  - - Organism/species?
+    - Homo sapiens.
+  - - Disease/condition/state?
+    - Chronic myeloid leukemia, including BCR-ABL-positive and BCR-ABL-negative cells during diagnosis
+      and therapy.
+  - - Experimental groups?
+    - BCR-ABL-positive versus BCR-ABL-negative cells, patient versus normal donor, disease stage, and
+      K562 cell line.
+  - - Study population?
+    - CML patients and normal donors; age and sex are not provided.
+  - - Experimental design?
+    - Comparative single-cell design with disease-stage and treatment-response sampling, including three-month
+      TKI treatment.
+  - - Sample count & distribution?
+    - 2,289 samples or cells; group-wise distribution cannot be determined from the metadata.
+  - - Sample-level characteristics?
+    - Samples vary by bone marrow phenotype, BCR-ABL status, diagnosis versus three-month TKI treatment,
+      and K562 cell-line origin.
+  - - Concise summary?
+    - Human single-cell transcriptomes of CML stem-like cells from marrow and K562 cells, comparing BCR-ABL
+      states across disease and treatment stages; demographics are unavailable.
+SRP079058:
+  data_source: sra
+  n_samples: 3589
+  qna:
+  - - Sample/source type?
+    - Brain tumor tissue from the glioblastoma migrating front.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Primary glioblastoma, profiling diseased neoplastic and infiltrating tumor-associated cells.
+  - - Experimental groups?
+    - Neoplastic and immune cell populations, with varied cell-selection categories.
+  - - Study population?
+    - Human primary glioblastoma patients; age and sex are unavailable.
+  - - Experimental design?
+    - Observational single-cell comparison of heterogeneous cells within or near tumors across patients.
+  - - Sample count & distribution?
+    - 3589 single-cell samples; exact distributions across cell types, patients, and selection groups
+      are unavailable.
+  - - Sample-level characteristics?
+    - Cells vary by neoplastic or immune identity, selection marker, patient, plate, well, and t-SNE cluster.
+  - - Concise summary?
+    - Single-cell RNA-seq of human primary glioblastoma brain tumors, comparing heterogeneous neoplastic
+      and infiltrating cells across patients; demographics are unavailable.
+SRP090061:
+  data_source: sra
+  n_samples: 1846
+  qna:
+  - - Sample/source type?
+    - Cultured human embryonic stem cells and their neural derivatives (cell culture).
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using Smart-seq2.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - In-vitro human neural development and differentiation, with no disease condition indicated.
+  - - Experimental groups?
+    - Differentiation timepoints and neural lineage states, including DCX-positive/negative and clonally
+      marked cells.
+  - - Study population?
+    - H1 human embryonic stem-cell-derived cultures; donor age, sex, and clinical demographics are unavailable.
+  - - Experimental design?
+    - Single-cell time-course profiling across a 54-day in-vitro neural differentiation protocol.
+  - - Sample count & distribution?
+    - 1846 single-cell samples are represented; group-wise counts are not provided.
+  - - Sample-level characteristics?
+    - The five sampled rows are control cultures at days 26 or 54, mostly DCX-positive, with one DCX-negative
+      sample.
+  - - Concise summary?
+    - Smart-seq2 single-cell profiling of human embryonic stem-cell-derived neural lineages across a 54-day
+      differentiation time course, without clinical disease information.
+SRP092166:
+  data_source: sra
+  n_samples: 1542
+  qna:
+  - - Sample/source type?
+    - Primary blood and cord-blood dendritic cells, including pre-cDCs and conventional dendritic-cell
+      subsets.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using SMART-Seq 2 libraries.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - The study examines cellular heterogeneity; disease status is not specified.
+  - - Experimental groups?
+    - Blood pre-cDCs, cord-blood pre-cDCs, CD141+ cDCs, and CD1c+ cDCs.
+  - - Study population?
+    - Primary human cells; age, sex, and donor details are not specified.
+  - - Experimental design?
+    - Cross-sectional, single-cell heterogeneity profiling without stated treatment or longitudinal pairing.
+  - - Sample count & distribution?
+    - 'There are 1,542 total records; the study describes 957 cells: 341 blood pre-cDCs, 452 cord-blood
+      pre-cDCs, 87 CD141+ cDCs, and 77 CD1c+ cDCs.'
+  - - Sample-level characteristics?
+    - The sampled rows are individual cord-blood or blood pre-cDCs with distinct sample identifiers and
+      no stated disease or treatment.
+  - - Concise summary?
+    - This is human single-cell SMART-Seq 2 profiling of blood and cord-blood dendritic cells to study
+      heterogeneity; disease status and demographics are unspecified.
+SRP096727:
+  data_source: sra
+  n_samples: 1733
+  qna:
+  - - Sample/source type?
+    - Cultured human embryonic stem cell-derived neural cells, including DCX-positive and DCX-negative
+      populations.
+  - - Sequencing/assay type?
+    - Single-cell RNA-seq using Smart-seq2.
+  - - Organism/species?
+    - Homo sapiens.
+  - - Disease/condition/state?
+    - In vitro inhibitory interneuron differentiation, with no disease condition reported.
+  - - Experimental groups?
+    - Differentiation timepoints and DCX-positive versus DCX-negative cell populations.
+  - - Study population?
+    - In vitro H1 human embryonic stem cell cultures; donor age and sex are unavailable.
+  - - Experimental design?
+    - Single-cell time-course profiling across a 125-day differentiation protocol.
+  - - Sample count & distribution?
+    - 1,733 samples are listed, with group-wise counts unavailable.
+  - - Sample-level characteristics?
+    - Sampled cells span D26 and D54 culture days, with DCX-positive and DCX-negative sorting.
+  - - Concise summary?
+    - Human hESC-derived neural cells underwent Smart-seq2 single-cell profiling across differentiation
+      timepoints; disease status and demographics are unavailable.
+SRP116272:
+  data_source: sra
+  n_samples: 1650
+  qna:
+  - - Sample/source type?
+    - Blood-derived immune cells, including purified T cells and monocytes.
+  - - Sequencing/assay type?
+    - RNA-seq of purified immune cells; bulk versus single-cell sequencing is not specified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Progression from M. tuberculosis infection to active tuberculosis disease.
+  - - Experimental groups?
+    - M. tuberculosis-infected progressors versus matched healthy controls, with varied immune stimulation
+      conditions.
+  - - Study population?
+    - Primarily M. tuberculosis-infected adolescents aged 12–18; sex and ethnicity matching are described.
+  - - Experimental design?
+    - Longitudinal matched case-control sampling with six-monthly blood collections and multiple timepoints.
+  - - Sample count & distribution?
+    - There are 1,650 samples; the abstract identifies 41 progressors and 104 matched controls.
+  - - Sample-level characteristics?
+    - The examples include mostly T cells, one monocyte sample, varied stimulation, and timepoints 0 or
+      180 days.
+  - - Concise summary?
+    - Human blood-derived immune-cell RNA-seq follows infected adolescents longitudinally, comparing TB
+      progressors with matched controls; exact assay breadth is unspecified.
+SRP166108:
+  data_source: sra
+  n_samples: 8464
+  qna:
+  - - Sample/source type?
+    - 'Cell culture/cell line: human HepaRG hepatic progenitor cells from liver.'
+  - - Sequencing/assay type?
+    - Targeted bulk RNA sequencing using the TempO-Seq assay.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Chemical-exposure toxicology study assessing transcriptomic responses to reference compounds, not
+      a disease cohort.
+  - - Experimental groups?
+    - Groups vary by 24 compounds, exposure concentrations, and differentiated versus undifferentiated
+      HepaRG state.
+  - - Study population?
+    - Human HepaRG cultures; age and sex are not applicable or unavailable.
+  - - Experimental design?
+    - High-throughput 96-hour chemical-exposure concentration-response design with differentiated and
+      undifferentiated cultures and well replicates.
+  - - Sample count & distribution?
+    - 8464 samples total; exact distribution across compounds, concentrations, and differentiation states
+      cannot be determined.
+  - - Sample-level characteristics?
+    - Samples vary by HepaRG differentiation state, compound and concentration, 96-hour exposure, baseline
+      condition, and well replicate.
+  - - Concise summary?
+    - High-throughput targeted RNA-seq of human HepaRG liver cell cultures after chemical exposure, comparing
+      concentrations and differentiation states; demographic information is unavailable.
+SRP200058:
+  data_source: sra
+  n_samples: 1844
+  qna:
+  - - Sample/source type?
+    - Cell culture mixtures of human HEK293 and murine NIH3T3 cell lines, with PBMC and mouse cortex samples
+      also included.
+  - - Sequencing/assay type?
+    - Primarily single-cell RNA-seq, including single-nucleus RNA-seq and bulk RNA-seq controls.
+  - - Organism/species?
+    - Both Homo sapiens and Mus musculus are represented.
+  - - Disease/condition/state?
+    - No disease is studied; this is a methodological benchmark using cell lines, PBMCs, and mouse cortex.
+  - - Experimental groups?
+    - Groups are defined by sample type, sequencing method, and replicate experiment.
+  - - Study population?
+    - The population includes pooled male and female cell lines, human PBMCs, and mouse cortex; ages are
+      unavailable.
+  - - Experimental design?
+    - Comparative method benchmarking across six experiments with two replicates per sample type and method.
+  - - Sample count & distribution?
+    - The metadata lists 1,844 samples; exact group distribution is unavailable, while the study reports
+      36 libraries.
+  - - Sample-level characteristics?
+    - The sampled rows include Mixture1 and Mixture2, Smart-seq2 or sci-RNA-seq, and pooled male-female
+      cell-line mixtures.
+  - - Concise summary?
+    - A multi-method single-cell RNA-seq benchmark of human and mouse cell lines, PBMCs, and cortex, without
+      disease or age information.
+SRP245584:
+  data_source: sra
+  n_samples: 2374
+  qna:
+  - - Sample/source type?
+    - Lymphoblastoid cell lines (LCLs), a blood-derived cell-culture model.
+  - - Sequencing/assay type?
+    - Bulk RNA-seq using 50-base single-end Illumina reads.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Schizophrenia, comparing affected cases with unaffected controls, including dopamine stimulation.
+  - - Experimental groups?
+    - Schizophrenia cases and controls under baseline and dopamine-stimulated conditions.
+  - - Study population?
+    - Adults of European ancestry, including male and female participants.
+  - - Experimental design?
+    - Case-control RNA-seq with baseline-versus-dopamine-stimulation comparisons; exact pairing is undetermined.
+  - - Sample count & distribution?
+    - There are 2,374 samples; reported overlapping subsets include 634/713, 529/660, and 514/690 cases/controls.
+  - - Sample-level characteristics?
+    - All five sampled rows are non-tumor LCL RNA samples, including both sexes and DOP or CTL-labeled
+      specimens.
+  - - Concise summary?
+    - This is adult European-ancestry human LCL bulk RNA-seq profiling schizophrenia cases and controls
+      at baseline and after dopamine stimulation.
+STAD:
+  data_source: tcga
+  n_samples: 453
+  qna:
+  - - Sample/source type?
+    - Stomach solid tissue, comprising primary tumors and solid tissue normal samples.
+  - - Sequencing/assay type?
+    - RNA-seq; bulk, single-cell, and total-RNA library types are not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Stomach adenocarcinoma, represented by primary tumors and solid tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor (415) and solid tissue normal (37) groups are reported.
+  - - Study population?
+    - Diagnosed patients; shown ages span 34–70 years, while sex and broader demographics are unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison; treatment, pairing, and longitudinal design are not
+      provided.
+  - - Sample count & distribution?
+    - 453 samples total; 415 primary tumor, 37 normal, and one sample remains unclassified by reported
+      counts.
+  - - Sample-level characteristics?
+    - Shown samples are primary tumors spanning ages 34–70, stages II–IV, histologies, collection sites,
+      and Illumina platforms.
+  - - Concise summary?
+    - TCGA human stomach-tissue RNA-seq compares adenocarcinoma tumors with normal tissue; pairing and
+      library subtype are unspecified.
+STOMACH:
+  data_source: gtex
+  n_samples: 384
+  qna:
+  - - Sample/source type?
+    - Stomach tissue (solid organ).
+  - - Sequencing/assay type?
+    - Bulk RNA-seq is implied, but the specific assay subtype is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease or health status is not specified.
+  - - Experimental groups?
+    - No experimental groups are defined in the metadata.
+  - - Study population?
+    - Adult donors; sampled rows include both sexes and ages 20–69.
+  - - Experimental design?
+    - Observational tissue cohort; treatment, longitudinal, and paired designs are not specified.
+  - - Sample count & distribution?
+    - 384 samples; group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - Samples vary by donor, sex, and age, with stomach tissue consistently represented.
+  - - Concise summary?
+    - 384 human adult stomach-tissue RNA-seq samples from GTEx, with donor and demographic variation but
+      no specified disease groups or design.
+STUDY_NA:
+  data_source: gtex
+  n_samples: 133
+  qna:
+  - - Sample/source type?
+    - Solid tissue; specific tissue subtype is not provided.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but bulk versus single-cell cannot be determined.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease or health status is not specified.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - Adult donors of both recorded sexes, with sampled ages 40–49 and 60–69.
+  - - Experimental design?
+    - Experimental design is not specified.
+  - - Sample count & distribution?
+    - 133 samples; group-wise distribution and unique subject count are unavailable.
+  - - Sample-level characteristics?
+    - Samples are human solid-tissue RNA-seq from adult GTEx donors, with disease status, tissue subtype,
+      and design unspecified.
+  - - Concise summary?
+    - ''
+TESTIS:
+  data_source: gtex
+  n_samples: 410
+  qna:
+  - - Sample/source type?
+    - Solid testis tissue samples.
+  - - Sequencing/assay type?
+    - The sequencing or RNA assay type cannot be determined from the metadata.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Testis tissue from GTEx donors; disease status is not provided.
+  - - Experimental groups?
+    - One testis tissue group is represented, with no treatment or disease subgroups specified.
+  - - Study population?
+    - The five shown samples are adult donors aged 30–59; sex coding is unspecified.
+  - - Experimental design?
+    - Observational donor tissue collection; pairing, treatment, and longitudinal design are not specified.
+  - - Sample count & distribution?
+    - There are 410 total samples, all assigned to the testis group.
+  - - Sample-level characteristics?
+    - Samples are from distinct donors and vary in age, spanning 30–59 years among the five shown.
+  - - Concise summary?
+    - GTEx human testis tissue samples from adult donors; assay type, disease status, and detailed design
+      are unspecified.
+TGCT:
+  data_source: tcga
+  n_samples: 156
+  qna:
+  - - Sample/source type?
+    - Testis solid tissue, primarily primary tumor samples.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; bulk versus single-cell status is not specified.
+  - - Organism/species?
+    - Homo sapiens (human).
+  - - Disease/condition/state?
+    - Testicular germ cell tumors, represented by tumor samples.
+  - - Experimental groups?
+    - Primary Tumor (150) and Additional New Primary (6).
+  - - Study population?
+    - Adult patients are represented; sampled ages are 22–45 years where reported, with sex unavailable.
+  - - Experimental design?
+    - An observational tumor cohort without reported treatment, control, pairing, or time-course groups.
+  - - Sample count & distribution?
+    - '156 samples total: 150 Primary Tumor and 6 Additional New Primary; subject count is unspecified.'
+  - - Sample-level characteristics?
+    - All five sampled rows are primary tumors, with varied ages, stages, collection sites, and orchiectomy-based
+      diagnosis.
+  - - Concise summary?
+    - Human testicular germ cell tumor tissue profiled by RNA-seq in an observational TCGA cohort; detailed
+      assay subtype and controls are unspecified.
+THCA:
+  data_source: tcga
+  n_samples: 572
+  qna:
+  - - Sample/source type?
+    - Solid thyroid tissue, including primary tumor, metastatic tissue, and solid tissue normal samples.
+  - - Sequencing/assay type?
+    - RNA-seq on Illumina HiSeq; bulk versus single-cell is not specified.
+  - - Organism/species?
+    - Human (Homo sapiens) samples.
+  - - Disease/condition/state?
+    - Thyroid carcinoma, including primary tumors, metastases, and solid tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor (505), solid tissue normal (59), and metastatic (8) groups.
+  - - Study population?
+    - Sampled individuals are adults aged 24–68 years; sex is not provided.
+  - - Experimental design?
+    - Observational sample collection with tumor, normal, and metastatic tissue groups; treatment or longitudinal
+      design is not indicated.
+  - - Sample count & distribution?
+    - 'There are 572 samples: 505 primary tumors, 59 solid tissue normals, and 8 metastatic samples.'
+  - - Sample-level characteristics?
+    - Samples vary by tissue type, papillary carcinoma histology, pathological stage, age, collection
+      site, and prospective versus retrospective collection.
+  - - Concise summary?
+    - This is a 572-sample human thyroid-tissue RNA-seq cohort spanning primary, normal, and metastatic
+      samples; detailed design and sex are unavailable.
+THYM:
+  data_source: tcga
+  n_samples: 122
+  qna:
+  - - Sample/source type?
+    - Thymus tissue, primarily primary tumor samples, with two solid-tissue normal samples.
+  - - Sequencing/assay type?
+    - Illumina HiSeq RNA-seq; bulk versus single-cell or total RNA-seq is unspecified.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Thymoma, comprising diseased primary tumors and limited normal thymus tissue.
+  - - Experimental groups?
+    - Primary tumor (120 samples) and solid tissue normal (2 samples).
+  - - Study population?
+    - Human patients; sampled ages are 47–67 years, while sex and complete age distribution are unavailable.
+  - - Experimental design?
+    - Observational tumor-versus-normal comparison; pairing, treatment, and longitudinal design are unspecified.
+  - - Sample count & distribution?
+    - '122 samples total: 120 primary tumors and 2 solid tissue normals.'
+  - - Sample-level characteristics?
+    - The five examples are primary thymus tumors from multiple centers, ages 47–67, with Masaoka stages
+      I or IIa and varied collection methods.
+  - - Concise summary?
+    - TCGA human thymoma thymus-tissue RNA-seq cohort comparing 120 tumors with 2 normals; bulk status,
+      pairing, and full demographics are unspecified.
+THYROID:
+  data_source: gtex
+  n_samples: 706
+  qna:
+  - - Sample/source type?
+    - Solid thyroid tissue.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but whether it is bulk, single-cell, total RNA, or another subtype cannot
+      be determined.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Disease or treatment status is not specified; samples are thyroid tissue from GTEx donors.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - Sampled rows represent adult GTEx donors aged 20–69, with both coded sexes present.
+  - - Experimental design?
+    - A formal experimental design cannot be determined from the metadata.
+  - - Sample count & distribution?
+    - There are 706 samples, but distribution across groups cannot be determined.
+  - - Sample-level characteristics?
+    - Sampled rows show thyroid tissue from distinct donors spanning ages 20–69 and both coded sexes.
+  - - Concise summary?
+    - This dataset contains 706 human thyroid tissue RNA-seq samples from adult GTEx donors, with assay
+      subtype, disease status, grouping, and design unspecified.
+UCEC:
+  data_source: tcga
+  n_samples: 589
+  qna:
+  - - Sample/source type?
+    - Solid uterine/endometrial tissue, chiefly primary tumor.
+  - - Sequencing/assay type?
+    - RNA-seq, apparently bulk rather than single-cell or spatial.
+  - - Organism/species?
+    - Human (Homo sapiens).
+  - - Disease/condition/state?
+    - Uterine corpus endometrial carcinoma, including primary, recurrent, and solid-tissue normal samples.
+  - - Experimental groups?
+    - Primary tumor (553), solid-tissue normal (35), and recurrent tumor (1).
+  - - Study population?
+    - Adult patients; sampled ages are 50–73 years, with sex not explicitly reported.
+  - - Experimental design?
+    - Observational, unpaired tumor-versus-normal cohort with recurrent tumor representation; no treatment
+      comparison is indicated.
+  - - Sample count & distribution?
+    - '589 samples total: 553 primary tumors, 35 solid-tissue normals, and 1 recurrent tumor.'
+  - - Sample-level characteristics?
+    - The five examples are primary endometrial tumors, mostly endometrioid, spanning stages I–IV and
+      multiple collection centers.
+  - - Concise summary?
+    - TCGA human bulk RNA-seq of adult uterine endometrial tissues, mainly primary carcinomas, with unpaired
+      normal and recurrent samples; broader demographics are unavailable.
+UTERUS:
+  data_source: gtex
+  n_samples: 159
+  qna:
+  - - Sample/source type?
+    - Solid uterine tissue from human donors.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but the bulk, single-cell, or library subtype is unspecified.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - Disease status or other biological condition is not specified.
+  - - Experimental groups?
+    - No experimental groups or case-control distinctions are identified.
+  - - Study population?
+    - Sampled examples are adults aged 30–59; sex coding is not interpretable.
+  - - Experimental design?
+    - No treatment, time-course, pairing, or other experimental design is specified.
+  - - Sample count & distribution?
+    - There are 159 total samples, but group-wise distribution is unavailable.
+  - - Sample-level characteristics?
+    - The five examples are uterine samples from distinct subjects aged 30–59, without disease or treatment
+      annotations.
+  - - Concise summary?
+    - This is 159-sample human uterine RNA-seq from GTEx donors; assay subtype, health status, and experimental
+      design are unspecified.
+VAGINA:
+  data_source: gtex
+  n_samples: 173
+  qna:
+  - - Sample/source type?
+    - Solid vaginal tissue samples from Homo sapiens.
+  - - Sequencing/assay type?
+    - RNA-seq is indicated, but the specific assay subtype cannot be determined.
+  - - Organism/species?
+    - The samples are from Homo sapiens.
+  - - Disease/condition/state?
+    - Disease status and biological condition are not provided.
+  - - Experimental groups?
+    - No experimental groups are specified.
+  - - Study population?
+    - The population includes individuals aged 20–29 and 60–69; sex coding is unspecified.
+  - - Experimental design?
+    - This appears to be an observational tissue-collection study without stated treatment, pairing, or
+      time course.
+  - - Sample count & distribution?
+    - There are 173 samples; group-wise distribution and total subject count are unavailable.
+  - - Sample-level characteristics?
+    - Samples are vaginal tissue from distinct donors spanning at least two age ranges, with some run
+      accessions missing.
+  - - Concise summary?
+    - This is a 173-sample human vaginal-tissue RNA-seq dataset from an observational GTEx study, with
+      disease status and design details unavailable.

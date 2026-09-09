@@ -1,0 +1,958 @@
+{
+  "acute myeloid leukemia": [
+    "aml",
+    "acute myelogenous leukemia",
+    "acute myeloblastic leukemia",
+    "acute nonlymphocytic leukemia",
+    "acute myeloid leukaemia"
+  ],
+  "adipose - subcutaneous": [
+    "subcutaneous adipose tissue",
+    "subcutaneous fat",
+    "subcutaneous fatty tissue",
+    "superficial adipose tissue",
+    "hypodermal fat",
+    "panniculus adiposus",
+    "sat"
+  ],
+  "adrenal gland": [
+    "adrenal gland",
+    "adrenal glands",
+    "suprarenal gland",
+    "suprarenal glands",
+    "adrenal organ",
+    "suprarenal body"
+  ],
+  "aorta": [
+    "main artery",
+    "aortic artery",
+    "aortic root",
+    "aortic arch",
+    "thoracic aorta",
+    "abdominal aorta",
+    "great vessel"
+  ],
+  "artery - tibial": [
+    "tibial artery",
+    "tibial arteries",
+    "anterior tibial artery",
+    "posterior tibial artery",
+    "anterior tibial",
+    "posterior tibial",
+    "leg artery"
+  ],
+  "bladder": [
+    "urinary bladder",
+    "vesica urinaria",
+    "vesical",
+    "bladder organ",
+    "urinary reservoir"
+  ],
+  "bladder urothelial carcinoma": [
+    "bladder cancer",
+    "urothelial carcinoma",
+    "transitional cell carcinoma",
+    "bladder urothelial cancer",
+    "bladder tcc",
+    "urothelial bladder carcinoma",
+    "urinary bladder carcinoma"
+  ],
+  "blood": [
+    "blood",
+    "whole blood",
+    "plasma",
+    "serum",
+    "hematology",
+    "hemoglobin"
+  ],
+  "bone marrow": [
+    "marrow",
+    "red marrow",
+    "yellow marrow",
+    "bone marrow tissue",
+    "hematopoietic tissue",
+    "myeloid tissue",
+    "medulla ossium",
+    "hematopoietic marrow"
+  ],
+  "brain": [
+    "cerebrum",
+    "encephalon",
+    "cerebral tissue",
+    "central nervous system",
+    "neural tissue",
+    "brain anatomy"
+  ],
+  "brain - cortex": [
+    "cerebral cortex",
+    "brain cortex",
+    "neocortex",
+    "cerebral mantle",
+    "cortical gray matter",
+    "cerebral cortical tissue"
+  ],
+  "brain lower grade glioma": [
+    "low-grade glioma",
+    "lgg",
+    "diffuse low-grade glioma",
+    "who grade 2 glioma",
+    "idh-mutant glioma",
+    "low-grade brain tumor"
+  ],
+  "breast": [
+    "mammary gland",
+    "mamma",
+    "breast tissue",
+    "mammary tissue",
+    "female breast",
+    "chest"
+  ],
+  "breast - mammary tissue": [
+    "breast",
+    "mammary gland",
+    "mammary tissue",
+    "mammary organ",
+    "breast tissue",
+    "mamma"
+  ],
+  "breast invasive carcinoma": [
+    "invasive breast cancer",
+    "invasive mammary carcinoma",
+    "infiltrating breast carcinoma",
+    "breast carcinoma",
+    "invasive ductal carcinoma",
+    "invasive lobular carcinoma",
+    "breast cancer"
+  ],
+  "cd1c+ conventional dendritic cells": [
+    "cd1c+ dendritic cells",
+    "cd1c-positive dendritic cells",
+    "conventional dendritic cell 2",
+    "cdc2",
+    "myeloid dendritic cells",
+    "bdca-1+ dendritic cells",
+    "bdca1+ dendritic cells"
+  ],
+  "cells - leukemia cell line (cml)": [
+    "chronic myeloid leukemia cells",
+    "chronic myelogenous leukemia cells",
+    "cml cell line",
+    "cml cells",
+    "k562 cells",
+    "lama-84 cells",
+    "ku812 cells"
+  ],
+  "cervical squamous cell carcinoma and endocervical adenocarcinoma": [
+    "cervical cancer",
+    "cervical carcinoma",
+    "cervical squamous cell carcinoma",
+    "cervical scc",
+    "endocervical adenocarcinoma",
+    "cervical adenocarcinoma",
+    "endocervical carcinoma",
+    "cervical malignancy"
+  ],
+  "cervix": [
+    "uterine cervix",
+    "cervix uteri",
+    "cervical canal",
+    "cervical os",
+    "external os",
+    "internal os",
+    "neck of the uterus"
+  ],
+  "chronic myeloid leukemia": [
+    "cml",
+    "chronic myelogenous leukemia",
+    "chronic granulocytic leukemia",
+    "bcr-abl1 leukemia",
+    "philadelphia chromosome-positive leukemia",
+    "ph+ leukemia",
+    "chronic myeloproliferative leukemia"
+  ],
+  "colon": [
+    "large intestine",
+    "large bowel",
+    "colonic",
+    "colorectal",
+    "bowel",
+    "colon anatomy"
+  ],
+  "colon - transverse": [
+    "transverse colon",
+    "transverse large intestine",
+    "middle colon",
+    "colon transversum"
+  ],
+  "colon adenocarcinoma": [
+    "colon cancer",
+    "colonic adenocarcinoma",
+    "colorectal adenocarcinoma",
+    "colorectal cancer",
+    "colon carcinoma",
+    "colorectal carcinoma"
+  ],
+  "colorectal": [
+    "colorectal cancer",
+    "colon cancer",
+    "rectal cancer",
+    "colonic neoplasm",
+    "rectal neoplasm",
+    "crc"
+  ],
+  "coronary artery": [
+    "coronary arteries",
+    "coronary vessel",
+    "cardiac artery",
+    "heart artery",
+    "coronary blood vessel",
+    "epicardial coronary artery",
+    "coronary circulation"
+  ],
+  "cyclophosphamide exposure": [
+    "cyclophosphamide toxicity",
+    "cyclophosphamide poisoning",
+    "cyclophosphamide occupational exposure",
+    "antineoplastic drug exposure",
+    "cytotoxic drug exposure",
+    "alkylating agent exposure"
+  ],
+  "decidua": [
+    "decidual tissue",
+    "decidualized endometrium",
+    "decidual membrane",
+    "maternal endometrium",
+    "decidua basalis",
+    "decidua capsularis",
+    "decidua parietalis"
+  ],
+  "dermis": [
+    "corium",
+    "dermal layer",
+    "true skin",
+    "skin connective tissue",
+    "papillary dermis",
+    "reticular dermis"
+  ],
+  "doxycycline-inducible nanog and klf2 transgenes": [
+    "doxycycline-inducible nanog",
+    "doxycycline-inducible klf2",
+    "tet-on nanog klf2",
+    "nanog overexpression",
+    "klf2 overexpression",
+    "nanog klf2 transgenes",
+    "inducible pluripotency transgenes"
+  ],
+  "esophageal carcinoma": [
+    "esophageal cancer",
+    "oesophageal carcinoma",
+    "esophagus cancer",
+    "esophageal neoplasm",
+    "esophageal malignancy",
+    "carcinoma of the esophagus",
+    "esophageal squamous cell carcinoma",
+    "esophageal adenocarcinoma"
+  ],
+  "esophagus": [
+    "oesophagus",
+    "gullet",
+    "food pipe",
+    "esophageal tract",
+    "esophageal tube"
+  ],
+  "esophagus - mucosa": [
+    "esophageal mucosa",
+    "oesophageal mucosa",
+    "esophageal lining",
+    "oesophageal lining",
+    "esophageal epithelium",
+    "mucosa of esophagus"
+  ],
+  "european ancestry": [
+    "european descent",
+    "european heritage",
+    "european genetic ancestry",
+    "european ethnic origin",
+    "european population",
+    "caucasian ancestry"
+  ],
+  "first trimester pregnancy": [
+    "first trimester",
+    "early pregnancy",
+    "trimester one",
+    "first gestational trimester",
+    "early gestation",
+    "weeks 1-13 pregnancy"
+  ],
+  "flavivirus": [
+    "flaviviruses",
+    "flaviviridae",
+    "arbovirus",
+    "mosquito-borne flavivirus",
+    "dengue virus",
+    "yellow fever virus",
+    "west nile virus",
+    "zika virus"
+  ],
+  "flavivirus infection": [
+    "flaviviral infection",
+    "flavivirus disease",
+    "arboviral infection",
+    "dengue",
+    "zika virus infection",
+    "west nile virus infection",
+    "yellow fever",
+    "japanese encephalitis"
+  ],
+  "frontotemporal dementia": [
+    "ftd",
+    "frontotemporal lobar degeneration",
+    "frontotemporal dementia syndrome",
+    "behavioral variant frontotemporal dementia",
+    "primary progressive aphasia",
+    "semantic dementia",
+    "pick disease"
+  ],
+  "glioblastoma": [
+    "gbm",
+    "glioblastoma multiforme",
+    "grade 4 astrocytoma",
+    "idh-wildtype glioblastoma",
+    "malignant glioma",
+    "high-grade glioma",
+    "brain cancer"
+  ],
+  "glioblastoma multiforme": [
+    "glioblastoma",
+    "gbm",
+    "glioblastoma multiforme",
+    "grade 4 astrocytoma",
+    "idh-wildtype glioblastoma",
+    "malignant glioma",
+    "high-grade glioma"
+  ],
+  "h9-nk2": [
+    "h9-nk2",
+    "h9 nk2",
+    "h9-nk2 cell line",
+    "h9-derived natural killer cells",
+    "human natural killer cell line",
+    "nk cell line"
+  ],
+  "hap1": [
+    "hap1 cell line",
+    "haploid human cell line",
+    "kbm-7",
+    "near-haploid cells",
+    "hap1 knockout cells",
+    "human haploid cells"
+  ],
+  "head and neck": [
+    "head neck",
+    "head and neck region",
+    "cervicofacial",
+    "otolaryngology",
+    "upper aerodigestive tract",
+    "head and neck cancer"
+  ],
+  "head and neck squamous cell carcinoma": [
+    "hnscc",
+    "head and neck cancer",
+    "head and neck squamous carcinoma",
+    "squamous cell carcinoma of the head and neck",
+    "upper aerodigestive tract squamous cell carcinoma",
+    "oral squamous cell carcinoma",
+    "oropharyngeal squamous cell carcinoma",
+    "laryngeal squamous cell carcinoma"
+  ],
+  "heart - left ventricle": [
+    "left ventricle",
+    "left ventricular",
+    "lv",
+    "left ventricular chamber",
+    "cardiac left ventricle",
+    "ventriculus sinister"
+  ],
+  "heparg": [
+    "heparg",
+    "hepa rg",
+    "heparg cells",
+    "human hepatic cell line",
+    "differentiated hepatocyte-like cells",
+    "liver progenitor cell line",
+    "hepatocellular carcinoma cell line"
+  ],
+  "human embryonic stem cells": [
+    "hescs",
+    "human es cells",
+    "embryonic stem cells",
+    "human embryonic stem cell lines",
+    "pluripotent stem cells",
+    "es cell"
+  ],
+  "human pre-cdcs": [
+    "human pre-dcs",
+    "pre-dendritic cells",
+    "dendritic cell precursors",
+    "preconventional dendritic cells",
+    "pre-cdcs",
+    "human dendritic cell progenitors"
+  ],
+  "human-mouse cell mixture": [
+    "xenograft",
+    "humanized mouse",
+    "chimeric cell mixture",
+    "mixed-species cell culture",
+    "interspecies co-culture",
+    "human-mouse chimera"
+  ],
+  "in vitro human inhibitory interneuron differentiation": [
+    "human gabaergic interneuron differentiation",
+    "in vitro interneuron differentiation",
+    "ipsc-derived inhibitory neurons",
+    "stem cell-derived gabaergic neurons",
+    "cortical interneuron differentiation",
+    "gabaergic neuron generation"
+  ],
+  "k562": [
+    "k562 cell line",
+    "chronic myeloid leukemia",
+    "cml cell line",
+    "erythroleukemia",
+    "bcr-abl1",
+    "philadelphia chromosome"
+  ],
+  "kidney": [
+    "renal",
+    "nephric",
+    "nephrology",
+    "kidneys",
+    "renal organ",
+    "urinary system"
+  ],
+  "kidney renal clear cell carcinoma": [
+    "clear cell renal cell carcinoma",
+    "ccrcc",
+    "clear cell rcc",
+    "renal cell carcinoma",
+    "kidney cancer",
+    "conventional renal cell carcinoma",
+    "hypernephroma"
+  ],
+  "kidney renal papillary cell carcinoma": [
+    "papillary renal cell carcinoma",
+    "papillary rcc",
+    "prcc",
+    "renal papillary carcinoma",
+    "papillary renal cell cancer",
+    "kidney papillary carcinoma"
+  ],
+  "liver": [
+    "hepatic",
+    "hepatology",
+    "hepatobiliary",
+    "liver organ",
+    "liver disease",
+    "hepatomegaly"
+  ],
+  "liver hepatocellular carcinoma": [
+    "hepatocellular carcinoma",
+    "hcc",
+    "liver cancer",
+    "hepatoma",
+    "hepatic carcinoma",
+    "primary liver cancer"
+  ],
+  "lung": [
+    "pulmonary",
+    "respiratory organ",
+    "lungs",
+    "pulmonic",
+    "thoracic organ",
+    "lower respiratory tract"
+  ],
+  "lung adenocarcinoma": [
+    "lung adenocarcinoma",
+    "pulmonary adenocarcinoma",
+    "adenocarcinoma of the lung",
+    "lung adenocarcinoma carcinoma",
+    "non-small cell lung cancer",
+    "nsclc",
+    "luad",
+    "bronchogenic adenocarcinoma"
+  ],
+  "lung squamous cell carcinoma": [
+    "lung squamous cell carcinoma",
+    "squamous cell lung cancer",
+    "pulmonary squamous cell carcinoma",
+    "lung squamous carcinoma",
+    "lscc",
+    "squamous non-small cell lung cancer",
+    "epidermoid carcinoma of the lung"
+  ],
+  "lymphoblastoid cell line": [
+    "lcl",
+    "lymphoblastoid cell line",
+    "lymphoblastoid cell culture",
+    "ebv-transformed b-cell line",
+    "epstein-barr virus transformed lymphocytes",
+    "immortalized b lymphocytes",
+    "lymphoblast cell line"
+  ],
+  "lymphoid_immune": [
+    "lymphoid immune system",
+    "lymphatic immune system",
+    "lymphoid tissue",
+    "lymphocytes",
+    "adaptive immunity",
+    "lymphoid organs"
+  ],
+  "m. tuberculosis": [
+    "mycobacterium tuberculosis",
+    "mtb",
+    "m tuberculosis",
+    "tubercle bacillus",
+    "koch bacillus",
+    "tuberculosis bacterium"
+  ],
+  "malaria": [
+    "paludism",
+    "plasmodium infection",
+    "plasmodium falciparum",
+    "plasmodium vivax",
+    "plasmodium malariae",
+    "plasmodium ovale",
+    "mosquito-borne disease",
+    "febrile tropical disease"
+  ],
+  "migrating front": [
+    "cutaneous larva migrans",
+    "creeping eruption",
+    "larva migrans",
+    "hookworm infection",
+    "ancylostoma braziliense",
+    "ancylostoma caninum"
+  ],
+  "minor salivary gland": [
+    "accessory salivary gland",
+    "small salivary glands",
+    "labial glands",
+    "palatal glands",
+    "buccal glands",
+    "lingual glands",
+    "submucosal salivary glands"
+  ],
+  "muscle - skeletal": [
+    "skeletal muscle",
+    "striated muscle",
+    "voluntary muscle",
+    "somatic muscle",
+    "muscle tissue",
+    "skeletal myofiber"
+  ],
+  "naive and primed states": [
+    "naive pluripotency",
+    "primed pluripotency",
+    "naive embryonic stem cells",
+    "primed embryonic stem cells",
+    "ground state pluripotency",
+    "epiblast stem cells"
+  ],
+  "nerve - tibial": [
+    "tibial nerve",
+    "posterior tibial nerve",
+    "tibial neuropathy",
+    "tibial nerve palsy",
+    "tibial nerve injury",
+    "tarsal tunnel syndrome"
+  ],
+  "non-tumor": [
+    "nonneoplastic",
+    "non-neoplastic",
+    "nontumorous",
+    "non-tumoral",
+    "nonmalignant",
+    "noncancerous"
+  ],
+  "ovarian serous cystadenocarcinoma": [
+    "high-grade serous ovarian carcinoma",
+    "hgsoc",
+    "ovarian serous carcinoma",
+    "serous cystadenocarcinoma of ovary",
+    "papillary serous ovarian carcinoma",
+    "epithelial ovarian cancer",
+    "ovarian adenocarcinoma"
+  ],
+  "ovary": [
+    "ovaries",
+    "ovarian gland",
+    "female gonad",
+    "ovarian tissue",
+    "ovarian anatomy",
+    "gonad"
+  ],
+  "pancreas": [
+    "pancreatic gland",
+    "pancreatic organ",
+    "pancreatic tissue",
+    "exocrine pancreas",
+    "endocrine pancreas",
+    "islets of langerhans"
+  ],
+  "pancreatic adenocarcinoma": [
+    "pancreatic ductal adenocarcinoma",
+    "pdac",
+    "pancreatic cancer",
+    "pancreatic carcinoma",
+    "pancreas adenocarcinoma",
+    "ductal pancreatic cancer",
+    "exocrine pancreatic cancer"
+  ],
+  "pbmc": [
+    "peripheral blood mononuclear cells",
+    "peripheral blood mononuclear cell",
+    "mononuclear leukocytes",
+    "blood mononuclear cells",
+    "pbmcs",
+    "peripheral blood lymphocytes",
+    "monocytes and lymphocytes"
+  ],
+  "peripheral blood": [
+    "circulating blood",
+    "whole blood",
+    "peripheral venous blood",
+    "venous blood",
+    "blood specimen",
+    "blood sample",
+    "pb",
+    "peripheral blood mononuclear cells"
+  ],
+  "pheochromocytoma and paraganglioma": [
+    "ppgl",
+    "pheochromocytoma",
+    "paraganglioma",
+    "chromaffin tumor",
+    "adrenal pheochromocytoma",
+    "extra-adrenal paraganglioma",
+    "catecholamine-secreting tumor",
+    "neuroendocrine tumor"
+  ],
+  "pituitary": [
+    "pituitary gland",
+    "hypophysis",
+    "adenohypophysis",
+    "neurohypophysis",
+    "pituitary hormones",
+    "pituitary disorders"
+  ],
+  "placenta": [
+    "placental tissue",
+    "placentation",
+    "maternal-fetal interface",
+    "chorion",
+    "trophoblast",
+    "placental insufficiency"
+  ],
+  "plasmodium falciparum": [
+    "p. falciparum",
+    "pf",
+    "falciparum malaria",
+    "malignant tertian malaria",
+    "plasmodium falciparum infection",
+    "severe malaria"
+  ],
+  "poly i:c stimulation": [
+    "poly(i:c)",
+    "polyinosinic-polycytidylic acid",
+    "poly ic",
+    "double-stranded rna mimic",
+    "tlr3 agonist",
+    "mda5 agonist",
+    "viral mimic stimulation",
+    "innate immune stimulation"
+  ],
+  "post-mortem tissue": [
+    "cadaveric tissue",
+    "cadaver tissue",
+    "autopsy tissue",
+    "autopsy specimen",
+    "postmortem specimen",
+    "necropsy tissue",
+    "necropsy specimen"
+  ],
+  "primary islets": [
+    "pancreatic islets",
+    "islets of langerhans",
+    "isolated islets",
+    "primary pancreatic islets",
+    "human islets",
+    "islet cells"
+  ],
+  "prostate": [
+    "prostate gland",
+    "prostatic gland",
+    "prostatic tissue",
+    "prostatitis",
+    "benign prostatic hyperplasia",
+    "prostate cancer",
+    "prostatic disease"
+  ],
+  "prostate adenocarcinoma": [
+    "prostate cancer",
+    "prostatic adenocarcinoma",
+    "prostate carcinoma",
+    "pca",
+    "acinar adenocarcinoma of the prostate",
+    "malignant neoplasm of prostate"
+  ],
+  "pulmonary artery": [
+    "pulmonary arteries",
+    "pulmonary trunk",
+    "left pulmonary artery",
+    "right pulmonary artery",
+    "arteria pulmonalis",
+    "pulmonary arterial system"
+  ],
+  "rectum adenocarcinoma": [
+    "rectal adenocarcinoma",
+    "adenocarcinoma of the rectum",
+    "rectal cancer",
+    "rectum carcinoma",
+    "rectal malignancy",
+    "rectal neoplasm",
+    "colorectal adenocarcinoma"
+  ],
+  "sarcoma": [
+    "soft tissue sarcoma",
+    "malignant mesenchymal tumor",
+    "bone sarcoma",
+    "osteosarcoma",
+    "ewing sarcoma",
+    "leiomyosarcoma"
+  ],
+  "single-cell rna sequencing": [
+    "scrna-seq",
+    "scrnaseq",
+    "single-cell transcriptomics",
+    "single-cell transcriptome profiling",
+    "single-cell gene expression analysis",
+    "single-cell sequencing"
+  ],
+  "skin": [
+    "integument",
+    "integumentary system",
+    "dermis",
+    "epidermis",
+    "cutaneous",
+    "dermatologic"
+  ],
+  "skin - sun exposed (lower leg)": [
+    "sun-exposed skin",
+    "lower leg skin",
+    "actinic keratosis",
+    "cutaneous squamous cell carcinoma",
+    "basal cell carcinoma",
+    "nonmelanoma skin cancer"
+  ],
+  "skin cutaneous melanoma": [
+    "cutaneous melanoma",
+    "skin melanoma",
+    "malignant melanoma",
+    "cutaneous malignant melanoma",
+    "melanoma of skin",
+    "primary cutaneous melanoma"
+  ],
+  "small intestine - terminal ileum": [
+    "terminal ileum",
+    "distal ileum",
+    "ileal terminal segment",
+    "ileum",
+    "small bowel",
+    "ileocecal region",
+    "ileocecal junction"
+  ],
+  "soft tissue": [
+    "connective tissue",
+    "muscle tissue",
+    "fascia",
+    "subcutaneous tissue",
+    "soft tissue injury",
+    "soft tissue mass"
+  ],
+  "solid": [
+    "solid tumor",
+    "solid mass",
+    "solid lesion",
+    "solid tissue",
+    "noncystic",
+    "nonfluid"
+  ],
+  "spleen": [
+    "splenic organ",
+    "splenic tissue",
+    "lien",
+    "splen"
+  ],
+  "stomach": [
+    "gastric",
+    "gaster",
+    "gastric organ",
+    "upper gastrointestinal tract",
+    "digestive system",
+    "stomach organ"
+  ],
+  "stomach adenocarcinoma": [
+    "gastric adenocarcinoma",
+    "gastric cancer",
+    "stomach cancer",
+    "gastric carcinoma",
+    "adenocarcinoma of the stomach",
+    "gastric malignancy"
+  ],
+  "tdp-43 pathology": [
+    "tdp-43 proteinopathy",
+    "tar dna-binding protein 43",
+    "tardbp",
+    "tdp43 pathology",
+    "frontotemporal lobar degeneration",
+    "amyotrophic lateral sclerosis"
+  ],
+  "testicular germ cell tumors": [
+    "testicular germ cell tumor",
+    "tgct",
+    "testicular cancer",
+    "testis cancer",
+    "seminoma",
+    "nonseminomatous germ cell tumor",
+    "nsgct",
+    "embryonal carcinoma"
+  ],
+  "testis": [
+    "testicle",
+    "testes",
+    "male gonad",
+    "testicular gland",
+    "testicular organ",
+    "gonad"
+  ],
+  "thymoma": [
+    "thymic tumor",
+    "thymic epithelial tumor",
+    "thymic neoplasm",
+    "mediastinal thymoma",
+    "thymic epithelial neoplasm",
+    "thymoma-associated myasthenia gravis"
+  ],
+  "thymus": [
+    "thymus gland",
+    "thymic gland",
+    "thymic organ",
+    "primary lymphoid organ",
+    "central lymphoid organ",
+    "thymopoiesis"
+  ],
+  "thyroid": [
+    "thyroid gland",
+    "thyroid disorders",
+    "hypothyroidism",
+    "hyperthyroidism",
+    "thyrotoxicosis",
+    "goiter",
+    "thyroiditis",
+    "thyroid cancer"
+  ],
+  "thyroid carcinoma": [
+    "thyroid cancer",
+    "thyroid malignancy",
+    "thyroid neoplasm",
+    "differentiated thyroid carcinoma",
+    "papillary thyroid carcinoma",
+    "follicular thyroid carcinoma",
+    "medullary thyroid carcinoma",
+    "anaplastic thyroid carcinoma"
+  ],
+  "troglitazone exposure": [
+    "troglitazone",
+    "rezulin",
+    "troglitazone toxicity",
+    "troglitazone hepatotoxicity",
+    "troglitazone-induced liver injury",
+    "drug-induced liver injury",
+    "thiazolidinedione exposure"
+  ],
+  "tuberculosis": [
+    "tb",
+    "tb disease",
+    "mycobacterium tuberculosis",
+    "mtb",
+    "pulmonary tuberculosis",
+    "consumption"
+  ],
+  "type 2 diabetes": [
+    "type 2 diabetes mellitus",
+    "t2dm",
+    "adult-onset diabetes",
+    "non-insulin-dependent diabetes mellitus",
+    "niddm",
+    "type 2 diabetes"
+  ],
+  "uhrr/hbrr sample mixtures at 3:1 and 1:3 ratios": [
+    "uhrr",
+    "hbrr",
+    "uhrr/hbrr mixtures",
+    "uhrr hbrr sample mixture",
+    "3:1 uhrr hbrr ratio",
+    "1:3 uhrr hbrr ratio"
+  ],
+  "umbilical vein": [
+    "umbilical vein",
+    "fetal umbilical vein",
+    "umbilical venous system",
+    "umbilical venous blood",
+    "left umbilical vein",
+    "umbilical vein anatomy",
+    "umbilical vein catheterization"
+  ],
+  "unknown": [
+    "unspecified",
+    "undetermined",
+    "unidentified",
+    "unknown etiology",
+    "idiopathic",
+    "cryptogenic"
+  ],
+  "uterine corpus endometrial carcinoma": [
+    "endometrial cancer",
+    "endometrial carcinoma",
+    "uterine cancer",
+    "uterine corpus carcinoma",
+    "corpus uteri carcinoma",
+    "endometrial adenocarcinoma",
+    "uterine corpus endometrial cancer",
+    "ec"
+  ],
+  "uterus": [
+    "womb",
+    "uterine organ",
+    "female reproductive organ",
+    "uterine cavity",
+    "uterus anatomy",
+    "hystera"
+  ],
+  "vagina": [
+    "vaginal canal",
+    "birth canal",
+    "female genital tract",
+    "vaginal anatomy",
+    "vaginal mucosa",
+    "vaginal opening"
+  ],
+  "whole blood": [
+    "whole blood",
+    "wb",
+    "unseparated blood",
+    "whole-blood sample",
+    "venous whole blood",
+    "anticoagulated whole blood"
+  ]
+}

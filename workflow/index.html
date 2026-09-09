@@ -1,0 +1,2950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scientific Dataset Curation and Labelling Workbench</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F7F3; --surface:#FFFFFF; --surface-alt:#EDF1EA; --border:#DCE1D7; --border-strong:#B7BFB0;
+    --ink:#1A2420; --ink-soft:#59635A; --ink-faint:#8E958A;
+    --accent:#146356; --accent-ink:#0B4038; --accent-soft:#E1F1EC; --accent-strong:#0F4E44;
+    --danger:#AA3A3A; --danger-soft:#FBEBEA;
+    --warn:#8A5A0F; --warn-soft:#F7EDD8; --warn-strong:#C98A1F;
+    /* Pure neutral grey, no green hue -- for the raw metadata grid's zebra
+       striping, so it doesn't inherit --surface-alt's green tint. */
+    --zebra:#F5F5F3;
+    /* Ultra-light row tints -- much lighter than --success-soft/--danger-soft/
+       --warn-soft (those stay for badges/pills/legend dots, where a bit more
+       saturation reads fine). A whole table row filled with the "soft" tokens
+       was too strongly tinted; these are for the row background specifically. */
+    --success-tint:#F4FAF5; --danger-tint:#FDF4F3; --warn-tint:#FBF7EC;
+    --shadow:0 1px 2px rgba(20,30,25,.05), 0 6px 20px -10px rgba(20,30,25,.15);
+    --display:'Zilla Slab',Georgia,serif; --sans:'IBM Plex Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+
+  /* ---- Left nav ---- */
+  .nav{background:var(--surface);border-right:1px solid var(--border);padding:22px 16px;display:flex;flex-direction:column;gap:2px}
+  .nav-brand{font-family:var(--display);font-weight:600;font-size:16.5px;color:var(--ink);padding:0 8px 18px;letter-spacing:-0.01em}
+  .nav-brand span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:500;margin-top:3px}
+  .nav-step{display:flex;align-items:flex-start;gap:11px;padding:9px 8px;border-radius:9px;position:relative}
+  .nav-step:not(:last-child)::after{content:"";position:absolute;left:21px;top:34px;width:1px;height:calc(100% - 2px);background:var(--border-strong)}
+  .nav-dot{width:21px;height:21px;border-radius:50%;background:var(--surface-alt);border:1.5px solid var(--border-strong);color:var(--ink-faint);font-family:var(--mono);font-size:10.5px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1}
+  .nav-step.current .nav-dot{background:var(--accent);border-color:var(--accent);color:#fff}
+  .nav-title{font-size:13px;font-weight:600;color:var(--ink-faint)}
+  .nav-step.current .nav-title{color:var(--ink)}
+  .nav-hint{font-size:11px;color:var(--ink-faint);margin-top:1px;line-height:1.3}
+  .nav-step.locked{opacity:.5}
+
+  main{padding:32px 36px 80px}
+  .wrap{max-width:1200px;margin:0 auto}
+  #wizard-view .wrap-inner{max-width:720px;margin:0 auto}
+
+  .page-head{margin-bottom:22px;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .page-head h1{font-family:var(--display);font-size:24px;font-weight:600;margin:0;letter-spacing:-0.01em}
+  .status{font-size:12px;color:var(--success,#2F7A3D);font-family:var(--mono);opacity:0;transition:opacity .25s}
+  .status.show{opacity:1}
+
+  /* ---- Task picker ---- */
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 26px;box-shadow:var(--shadow);margin-bottom:24px}
+  /* Stays pinned to the top of the viewport while the dataset list below it
+     scrolls, so the biologist can always cross-check a dataset's tags/AI
+     info against the Task's own requirements without scrolling back up. */
+  #task-context-panel{position:sticky;top:16px;z-index:20;transition:padding .15s ease,box-shadow .15s ease}
+  #task-context-sentinel{height:1px}
+  /* Once scrolled past its natural spot, the panel shrinks to a slim bar --
+     just what's needed to compare against a dataset card below (name,
+     sample/sequence type, labels), not the full card (with purpose text
+     and the collection badge) staying pinned and heavy the whole time. */
+  #task-context-panel.pinned{
+    padding:10px 22px;
+    box-shadow:0 8px 20px -8px rgba(20,30,25,.35);
+    border-color:var(--border-strong);
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  #task-context-panel.pinned #ctx-task-name{font-size:14px;margin:0;white-space:nowrap}
+  #task-context-panel.pinned .ctx-purpose,
+  #task-context-panel.pinned .ctx-collection-badge{display:none}
+  #task-context-panel.pinned .ctx-meta{margin:0}
+  #task-context-panel.pinned .ctx-labels{margin:0}
+
+  /* Task name bar on the Sample Curation & Labelling table -- stays in
+     normal document flow, scrolls away with the page (not pinned/sticky --
+     deliberately, so it doesn't sit on top of the table while scrolling). */
+  #cur-task-context-panel{padding:18px 22px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  #cur-task-context-panel #cur-ctx-task-name{font-size:16px;margin:0}
+  #cur-task-context-panel #cur-ctx-task-types{margin:0;white-space:nowrap}
+  /* Study titles can run 100+ chars -- truncate to one line with an ellipsis
+     instead of wrapping across the page; native title="" gives the full text
+     on hover, the popover repeats it in full at the top too. min-width:0 lets
+     it actually shrink inside the page-head flex row (flex children default
+     to min-width:auto, which blocks ellipsis from ever kicking in). */
+  #cur-dataset-id{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  #cur-dataset-heading-wrap{min-width:0;flex:1 1 auto}
+  .cur-dataset-accession{display:block;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .cur-dataset-tap-hint{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:600;color:var(--accent-ink,var(--ink));background:var(--accent-soft);padding:2px 8px;border-radius:999px;margin-top:5px;cursor:pointer}
+  /* Wider than the default raw-popover -- this one holds a full dataset card
+     (tags + AI Extracted Information table), not a single-column key/value list. */
+  #ds-hover-popover{width:560px}
+  .panel h2{font-family:var(--display);font-size:18px;font-weight:600;margin:0 0 14px;letter-spacing:-0.01em}
+  .task-row{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--surface-alt);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px}
+  .task-row-text .name{font-size:15px;font-weight:600}
+  .task-row-text .purpose{font-size:12.5px;color:var(--ink-soft);margin-top:3px;max-width:52ch}
+  .task-row-text .labels{font-size:11.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:6px}
+  .task-row-actions{display:flex;gap:8px;flex-shrink:0}
+  .empty-msg{font-size:13px;color:var(--ink-faint);padding:8px 0 4px}
+
+  .btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;cursor:pointer}
+  .btn:hover{border-color:var(--ink-faint)}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-strong);border-color:var(--accent-strong)}
+  .btn-danger{background:var(--surface);border-color:var(--danger);color:var(--danger)}
+  .btn-danger:hover{background:var(--danger-soft)}
+  .btn-edit{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+  .btn-edit:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn:focus-visible, input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn-sm{padding:7px 13px;font-size:12.5px}
+
+  /* ---- Wizard ---- */
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .step-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .step-num{width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step-head h2{font-size:15.5px;font-weight:600;margin:0}
+  .step-sub{font-size:12.5px;color:var(--ink-faint);margin:2px 0 0 34px}
+
+  .field{margin-top:14px}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+  .field input[type=text], .field textarea{width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14px;background:var(--bg);color:var(--ink)}
+  .field input[type=text]:focus, .field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .field textarea{min-height:64px;resize:vertical;line-height:1.5}
+  .field-error{font-size:11.5px;color:var(--danger);margin-top:5px;display:none}
+  .field.invalid input, .field.invalid textarea, .field.invalid select{border-color:var(--danger)}
+  .field select{width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14px;background:var(--bg);color:var(--ink);cursor:pointer}
+  .field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .field-help{font-size:11.5px;color:var(--ink-faint);margin-top:6px}
+  .field.invalid .field-error{display:block}
+
+  .label-add-row{display:flex;gap:8px}
+  .label-add-row input{flex:1}
+  .label-add-row button{white-space:nowrap}
+  .suggest-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+  .suggest-chip{font-family:var(--mono);font-size:11.5px;background:var(--surface-alt);border:1px dashed var(--border-strong);color:var(--ink-soft);padding:4px 10px;border-radius:999px;cursor:pointer}
+  .suggest-chip:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .suggest-chip:disabled{opacity:.4;cursor:default;border-style:solid}
+  .suggest-label{font-size:11px;color:var(--ink-faint);margin-right:2px}
+
+  .label-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;min-height:44px;padding:12px;background:var(--surface-alt);border:1px solid var(--border);border-radius:10px}
+  .label-list.empty{align-items:center}
+  .label-empty-msg{font-size:12.5px;color:var(--ink-faint);font-style:italic}
+  .chip{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border-strong);border-radius:999px;padding:6px 8px 6px 14px;font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink)}
+  .chip-x{width:18px;height:18px;border-radius:50%;border:none;background:var(--surface-alt);color:var(--ink-faint);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .chip-x:hover{background:var(--danger-soft);color:var(--danger)}
+  .label-count{font-size:11.5px;color:var(--ink-faint);margin-top:8px;font-family:var(--mono)}
+
+  .wizard-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--bg);font-family:var(--sans);font-size:13px;font-weight:600;padding:11px 20px;border-radius:8px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---- Stage 2: Discovery & Review ---- */
+  #task-context-panel{padding:18px 22px}
+  .ctx-purpose{font-size:13px;color:var(--ink-soft);margin:4px 0 0}
+  .ctx-meta{font-size:12px;color:var(--ink-faint);font-family:var(--mono);margin-top:8px}
+  .ctx-labels{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .ctx-collection-badge{display:inline-block;margin-top:12px;font-size:11.5px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);border:1px solid var(--accent);border-radius:999px;padding:5px 12px;font-family:var(--mono)}
+  .ctx-labels .chip{font-size:11.5px;padding:4px 10px 4px 12px}
+  .ctx-labels .chip .chip-x{display:none}
+
+  .list-title{font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-0.01em}
+  .list-sub{font-size:12px;color:var(--ink-faint);font-family:var(--mono)}
+  .cur-progress-badge{display:flex;align-items:center;gap:9px;font-family:var(--sans);font-size:12px;color:var(--ink-soft)}
+  .cur-progress-track{display:inline-block;width:84px;height:6px;border-radius:999px;background:var(--surface-alt);overflow:hidden}
+  .cur-progress-fill{display:block;height:100%;background:var(--accent);border-radius:999px}
+  .search-row{display:flex;gap:10px;background:var(--surface);border:1px solid var(--border-strong);border-radius:11px;padding:6px;box-shadow:var(--shadow)}
+  .search-row input{flex:1;border:none;outline:none;background:transparent;font-family:var(--mono);font-size:14px;padding:11px 10px;color:var(--ink)}
+  .search-row input::placeholder{color:var(--ink-faint)}
+  .match-trace{font-family:var(--mono);font-size:12px;color:var(--accent-ink);margin-top:8px;min-height:16px}
+  .match-trace .mchip{display:inline-block;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent-ink);border-radius:999px;padding:2px 9px;margin:3px 5px 0 0}
+
+  .filter-bar{display:flex;align-items:center;justify-content:space-between;margin:20px 0 14px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;gap:8px}
+  .filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .filter-tabs button{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:8px;cursor:pointer}
+  .filter-tabs button.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+  .ds-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .ds-card.reviewed-included{border-left:3px solid var(--accent)}
+  .ds-card.reviewed-excluded{opacity:.65}
+  .ds-row1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ds-id{font-family:var(--mono);font-size:15.5px;font-weight:700}
+  .ds-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.03em}
+  .b-gtex{background:#E7F3E6;color:#2F7A3D}
+  .b-tcga{background:#FBEBE5;color:#A5502B}
+  .b-sra{background:#ECEAFB;color:#5A4FB0}
+  .ds-n{font-size:12px;color:var(--ink-faint);margin-left:auto;font-family:var(--mono)}
+  .ds-included-tag{font-size:11px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);border-radius:999px;padding:2px 9px}
+  /* Source Link row -- shown right under the card header, before tags. One
+     clean bordered box (not a bare colored text link) -- a small label
+     ("Primary source link") plus the link itself, with breathing room
+     between them so it doesn't read as one run-on phrase. */
+  .ds-source-row{margin:10px 0 2px}
+  .ds-source-box{
+    display:inline-flex;flex-direction:column;gap:3px;align-items:flex-start;
+    background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;
+    padding:8px 14px;font-size:12.5px;max-width:520px;
+  }
+  .ds-source-box .src-label{color:var(--ink-faint);font-weight:600;letter-spacing:.02em}
+  .ds-source-box a{color:var(--accent-ink);font-weight:700;text-decoration:none;line-height:1.35}
+  .ds-source-box a:hover{text-decoration:underline}
+  .ds-tag-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:11px}
+  .ds-tag-label{font-size:11.5px;color:var(--ink-faint);font-family:var(--mono)}
+  .ds-tag-label.ai{color:#8A5A0B;font-weight:600}
+  .ds-tag-none{font-size:11.5px;color:var(--ink-faint);font-style:italic}
+  .ds-chip{font-size:11.5px;padding:4px 10px;border-radius:6px;font-family:var(--mono)}
+  .ds-chip.structured{background:var(--accent-soft);color:var(--accent-ink)}
+  .ds-chip.ai{background:transparent;color:#8A5A0B;border:1px dashed #8A5A0B}
+
+  .qna-block{margin-top:13px;background:#F2F2F0;border:1px solid #C9C9C5;border-radius:9px;padding:12px 14px}
+  .qna-heading{margin:0;font-size:12.5px;font-weight:600;color:var(--ink)}
+  .qna-heading span{font-weight:400;color:var(--ink-faint);font-family:var(--mono);font-size:11px}
+  table.qna-table{width:100%;border-collapse:collapse;margin-top:9px}
+  table.qna-table td{font-size:12.5px;padding:6px 8px;vertical-align:top;border-top:1px solid var(--border)}
+  table.qna-table tr:first-child td{border-top:none}
+  table.qna-table td:first-child{width:32%;color:var(--ink);font-weight:600}
+
+  /* Separates the description/highlight fields above (Tissue, Source,
+     Cell Population, ...) from the Tissue/Disease hint lines below --
+     without this they read as one dense, undifferentiated block. */
+  .snip-hints{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+  .ds-info-toggle{margin-top:14px}
+  /* Custom chevron via ::before, browser's own default marker hidden --
+     was previously showing BOTH (its native triangle + our own "▸" glyph
+     in the text), which is why it looked like two triangles stacked. */
+  .ds-info-toggle summary{
+    font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;user-select:none;
+    list-style:none;display:inline-flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:6px;transition:background .12s ease,color .12s ease;
+  }
+  .ds-info-toggle summary::-webkit-details-marker{display:none}
+  .ds-info-toggle summary::before{
+    content:"";width:0;height:0;flex-shrink:0;
+    border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:5px solid var(--ink-faint);
+    transition:transform .15s ease;
+  }
+  .ds-info-toggle[open] summary::before{transform:rotate(90deg)}
+  .ds-info-toggle summary:hover{background:var(--surface-alt);color:var(--ink)}
+  .ds-info-toggle pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink-soft);background:var(--surface-alt);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-top:6px}
+  /* Recount3 Info -- fetched live from recount3's own public S3 bucket
+     (same file the recount3 R package + Shiny study-explorer read), shown
+     as a single-row, horizontally scrollable table above the raw evidence
+     -- study_abstract is long and must scroll, not wrap and blow up the
+     card's height. */
+  .r3-info-heading{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink,#4A6B4E);margin:2px 0 8px}
+  .r3-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+  table.r3-table{border-collapse:collapse;font-size:14.5px;font-family:var(--sans)}
+  table.r3-table th{text-align:left;font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);padding:9px 14px;background:var(--surface-alt);border-bottom:1px solid var(--border);white-space:nowrap}
+  table.r3-table td{padding:11px 14px;vertical-align:top;color:var(--ink);font-weight:600;line-height:1.6;white-space:nowrap}
+  /* study_abstract only: wraps and clamps to 6 lines by default (it's the
+     one field long enough that a single nowrap line is useless), with an
+     explicit "More" toggle -- click it to expand the row to the full text,
+     instead of cutting it off silently or relying on a hover tooltip. */
+  /* study_title: wraps onto its own lines within a fixed (roughly half-page)
+     width, instead of forcing the whole table wider as one long nowrap line. */
+  table.r3-table td.r3-title{white-space:normal;width:280px;max-width:280px}
+  table.r3-table td.r3-abstract{white-space:normal;width:420px;max-width:420px}
+  .r3-abstract-text{
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:6;overflow:hidden;
+    text-align:justify; /* every line stretches to the same width, like a book/newspaper column, instead of ragged-right */
+  }
+  .r3-abstract-text.r3-expanded{display:block;-webkit-line-clamp:unset;overflow:visible}
+  .r3-abstract-more{margin-top:6px;font-size:12.5px;font-weight:600;color:var(--accent-ink,#4A6B4E);cursor:pointer;background:none;border:none;padding:0;font-family:var(--sans)}
+  .r3-abstract-more:hover{text-decoration:underline}
+  .r3-loading, .r3-error{font-size:13px;color:var(--ink-faint);padding:6px 2px}
+  .r3-error{color:#B23B3B}
+  /* Real key/value grid for a sample's raw fields, instead of a flat
+     "key: value" text dump. A plain divider line between rows (not a
+     border-radius'd background per row) plus a faint neutral-grey zebra --
+     reads as one continuous list, not a stack of separate green boxes. */
+  .raw-grid{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2px 0;margin-top:8px;overflow:hidden}
+  .raw-row{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:7px 12px;font-family:var(--mono);font-size:12px;line-height:1.5;border-bottom:1px solid var(--border)}
+  .raw-row:last-child{border-bottom:none}
+  .raw-row:nth-child(even){background:var(--zebra)}
+  .raw-key{font-weight:700;color:var(--ink-soft);word-break:break-word}
+  .raw-val{color:var(--ink);word-break:break-word;overflow-wrap:anywhere}
+  .raw-val-empty{color:var(--ink-faint)}
+  .raw-row-sub{grid-template-columns:180px 1fr;padding-left:26px;border-left:2px solid var(--border-strong);margin-left:12px}
+  .raw-empty{font-family:var(--sans);font-size:12.5px;color:var(--ink-faint);margin:6px 0 0}
+
+  .ds-actions{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .ds-reason-row{margin-top:8px}
+  .ds-reason-input{width:100%;border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-family:var(--sans);font-size:12.5px;background:var(--surface-alt);color:var(--ink)}
+  .ds-reason-input::placeholder{color:var(--ink-faint);font-style:italic}
+  .ds-reason-input:focus{outline:none;border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 2px var(--accent-soft)}
+  .dbtn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer}
+  .dbtn.sel[data-d="include"]{background:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent)}
+  .dbtn.sel[data-d="exclude"]{background:var(--danger-soft);color:var(--danger);border-color:var(--danger)}
+  .dbtn.sel[data-d="unsure"]{background:#FAF0DD;color:#8A5A0B;border-color:#C99A3E}
+  .empty-list-msg{text-align:center;color:var(--ink-faint);font-size:13px;padding:30px 0}
+  .preview-btn{margin-left:auto}
+
+  /* ---- Stage 4-5: Sample Curation ---- */
+  /* The outer card wrapper is dropped -- each ROW is now its own rounded,
+     bordered box (same shape language as .rev-note's coverage-check
+     warning: rounded corners, a thick colored left edge, light background),
+     spaced apart via border-spacing, instead of one flat table with a
+     single outer border. */
+  .tbl-scroll{overflow-x:auto}
+  /* table-layout:fixed + explicit column widths -- with the old auto layout,
+     leftover width (left over now that this table has fewer columns than it
+     used to) was landing as dead empty space inside the Sample Snippet
+     column instead of the columns after it, pushing Blood/Tissue etc. way
+     out to the right with a big gap in between. */
+  table.cur-table{border-collapse:separate;border-spacing:0 10px;width:100%;table-layout:fixed;font-size:12.5px}
+  .col-idx{width:48px}
+  .col-snippet{width:auto}
+  .col-blood, .col-decision, .col-label{width:150px}
+  .col-menu{width:76px}
+  table.cur-table th{text-align:left;font-family:var(--sans);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:12px 14px;border-bottom:2px solid var(--border-strong);color:var(--ink-faint);white-space:nowrap;background:var(--surface);position:sticky;top:0;z-index:5}
+  /* Every cell in a row shares the same top/bottom border color, so the row
+     reads as one continuous box rather than per-cell lines; only the first
+     and last cell get a left/right border + that side's corner radius, to
+     close the box off at each end. */
+  table.cur-table td{padding:14px;border-top:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong);font-family:var(--mono);vertical-align:top;background:var(--surface)}
+  table.cur-table td.c-idx{width:48px;font-weight:600;color:var(--ink-faint);font-family:var(--mono);border-left:4px solid var(--border-strong);border-radius:10px 0 0 10px}
+  table.cur-table th.c-more, table.cur-table td.c-more{width:90px}
+  table.cur-table th.c-menu, table.cur-table td.c-menu{width:76px}
+  table.cur-table td.c-menu{border-right:1px solid var(--border-strong);border-radius:0 10px 10px 0}
+  /* A thick left edge (same weight/feel as .rev-note.warn's accent border)
+     plus a very light tint tell you a row's decision at a glance --
+     Keep/Reject/Skip still get distinct colors (a Rejected sample looking
+     identically "green/successful" to a Kept one would be misleading), just
+     understated ones instead of a solid block of color. */
+  table.cur-table tr.cur-row-keep td{background:var(--success-tint);border-color:var(--success,#2F7A3D)}
+  table.cur-table tr.cur-row-reject td{background:var(--danger-tint);border-color:var(--danger)}
+  table.cur-table tr.cur-row-skip td{background:var(--warn-tint);border-color:var(--warn-strong)}
+
+  .cur-legend{font-family:var(--sans);font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cur-legend-item{display:flex;align-items:center;gap:6px}
+  .cur-legend-swatch{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--border-strong)}
+  .cur-legend-swatch.keep{background:var(--success,#2F7A3D)}
+  .cur-legend-swatch.reject{background:var(--danger)}
+  .cur-legend-swatch.skip{background:var(--warn-strong)}
+
+  /* Keep/Reject/Skip and Label read as compact status badges/chips, not
+     bare colored text -- consistent visual language across both columns. */
+  .cur-decision-badge{display:inline-block;font-family:var(--sans);font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface-alt);border:1px solid var(--border-strong);color:var(--ink-faint)}
+  .cur-decision-badge.keep{background:var(--success-soft,#E7F4E9);border-color:var(--success,#2F7A3D);color:var(--success-ink,#1F5C2C)}
+  .cur-decision-badge.reject{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+  .cur-decision-badge.skip{background:var(--warn-soft);border-color:var(--warn-strong);color:var(--warn)}
+  .cur-blood-pill{display:inline-block;font-family:var(--sans);font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--surface-alt);border:1px solid var(--border-strong);color:var(--ink-soft)}
+  .cur-blood-pill.unset{background:none;border-style:dashed;color:var(--ink-faint)}
+  .cur-label-pill{display:inline-block;font-family:var(--mono);font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent-ink)}
+  .cur-empty-text{font-family:var(--sans);color:var(--ink-faint)}
+  /* No max-width needed anymore -- the column's own width is now
+     controlled properly via table-layout:fixed on .cur-table above. */
+  .snip-desc{font-family:var(--sans);font-size:12.5px;color:var(--ink);line-height:1.5;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  /* Editor screen's snippet is larger and prominent, per spec -- no clamp,
+     bigger text, real breathing room before deciding. */
+  .snip-desc.large{display:block;-webkit-line-clamp:unset;line-clamp:unset;font-size:15px;line-height:1.7;margin-bottom:20px;max-width:70ch}
+  .snip-line{font-family:var(--sans);font-size:11.5px;color:var(--ink-soft);margin-bottom:2px}
+  .snippet-card .snip-line{font-size:12.5px;margin-bottom:6px}
+  .snip-line .k{font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:2px}
+  .cur-select, .cur-input{border:1px solid var(--border-strong);border-radius:6px;padding:5px 7px;font-family:var(--sans);font-size:12px;background:var(--bg);color:var(--ink);width:100%;min-width:130px}
+  .cur-select:focus, .cur-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .cur-select:disabled{background:var(--surface-alt);color:var(--ink-faint);cursor:not-allowed}
+  .cur-more-btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer}
+  .cur-more-btn:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .raw-popover{
+    position:fixed;z-index:100;display:none;
+    width:460px;max-width:calc(100vw - 32px);max-height:70vh;overflow-y:auto;
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;
+    padding:14px 16px;box-shadow:0 8px 32px -8px rgba(20,30,25,.45);
+  }
+  .raw-popover.show{display:block}
+  .raw-popover-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .raw-popover-head span{font-size:11.5px;font-weight:600;color:var(--ink-faint);font-family:var(--mono)}
+  .raw-popover-close{border:none;background:var(--surface-alt);color:var(--ink-faint);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;line-height:1}
+  .raw-popover-close:hover{background:var(--danger-soft);color:var(--danger)}
+  .raw-popover pre, .snippet-card pre, .snip-box pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--ink);margin:0}
+  /* Global, not scoped to specific containers -- this was the bug: every
+     new place that reused .rk/.rsub (like the "Dataset information" panel
+     below) needed to be added to the selector list by hand, and this one
+     was missed, so its keys never got bolded at all. */
+  .rk{font-weight:700;text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:2px;color:var(--accent-ink,var(--ink))}
+  .rsub{padding-left:16px;display:block}
+  .pager{display:flex;align-items:center;gap:6px;margin-top:14px;flex-wrap:wrap;font-size:12.5px}
+  .pager button{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:12.5px;padding:6px 12px;border-radius:7px;cursor:pointer}
+  .pager button.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .pager button:disabled{opacity:.4;cursor:default}
+
+  .cur-footer{display:flex;align-items:center;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+  .editor-inner .cur-footer{margin-top:12px;padding-top:12px}
+
+  /* One-sample editor screen -- narrower than the page's usual 1200px so
+     the Curation panel stays a comfortable, focused input width, but wide
+     enough that the Sample Snippet card isn't cramped. */
+  .editor-inner{max-width:980px;margin:0 auto}
+  /* Kept tight on purpose -- Sample Snippet + Curation panel, plus the
+     Previous/Save & Next buttons below, should fit one screen without
+     scrolling for the common case (nothing expanded). Only "View Full
+     Sample Information"/"More info" opening should need a scroll. */
+  .editor-inner .page-head{margin-bottom:10px}
+  .editor-progress-line{font-family:var(--sans);font-size:12.5px;color:var(--ink-faint);margin:4px 0 12px}
+  /* White, not the app's greenish --surface-alt -- a light scientific-tool
+     card, not a colored one. Green shows up only as a thin top accent
+     stripe, not as the card's dominant background. */
+  /* Same shape language as the table rows and the coverage-check warning
+     box: rounded card, thick colored left edge, light background -- one
+     consistent "box" language across the whole curation flow. */
+  .snippet-card{margin-bottom:12px;background:var(--surface);border-color:var(--border);border-left:4px solid var(--accent);box-shadow:0 1px 2px rgba(20,30,25,.04);padding:16px 30px}
+  .editor-task-info{text-align:right;font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);max-width:420px}
+  .editor-task-info b{color:var(--ink);font-weight:700}
+  .editor-task-info > div + div{margin-top:4px}
+  .editor-task-info .task-label-chip{display:inline-block;background:var(--surface-2,#eef1ee);border-radius:3px;padding:2px 8px;margin:2px 0 0 4px;font-size:11.5px}
+  .editor-fields{border-left:4px solid var(--accent)}
+  .snippet-card h2, .editor-fields h2{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin:0 0 8px;color:var(--ink-soft)}
+  .editor-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:0;padding:16px 26px}
+  .editor-field{transition:opacity .15s ease}
+  .editor-field.muted{opacity:.55}
+  .editor-field label{display:block;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:7px}
+  .req-asterisk{color:var(--danger,#B3261E)}
+  .editor-field .cur-select{max-width:320px;padding:8px 10px;font-size:13px}
+  .editor-hint{font-family:var(--sans);font-size:11.5px;color:var(--ink-faint);margin:6px 0 0}
+  /* Keep/Reject/Skip as a segmented control instead of a bare <select> --
+     this is the actual decision a biologist makes for every sample, so it
+     gets the most visual weight on the page. The real <select> above stays
+     in the DOM (hidden) as the single source of truth these buttons drive. */
+  .decision-seg{display:flex;gap:8px;max-width:420px}
+  .decision-seg-btn{flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .12s ease,border-color .12s ease,color .12s ease}
+  .decision-seg-btn:hover{border-color:var(--ink-faint)}
+  .decision-seg-btn.keep.active{background:var(--success-soft,#E7F4E9);border-color:var(--success,#2F7A3D);color:var(--success-ink,#1F5C2C)}
+  .decision-seg-btn.reject.active{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+  .decision-seg-btn.skip.active{background:var(--warn-soft);border-color:var(--warn-strong);color:var(--warn)}
+  .cur-export-wrap{position:relative;margin-left:auto}
+  .cur-export-menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;box-shadow:var(--shadow);padding:6px;min-width:200px;display:none;flex-direction:column;gap:2px;z-index:30}
+  .cur-export-menu.open{display:flex}
+  .cur-export-menu button{border:none;background:none;text-align:left;padding:8px 10px;border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--ink);cursor:pointer}
+
+  /* Deliberately quiet by default -- this shouldn't compete for attention
+     with the actual curation decisions in the row; only picks up the
+     accent color on hover/focus. */
+  .cur-edit-btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-soft);font-family:var(--sans);font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer;transition:background .1s ease,border-color .1s ease,color .1s ease}
+  .cur-edit-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+  .cur-export-menu button:hover{background:var(--surface-alt)}
+
+  /* ---- Stage 6: Collection Review ---- */
+  .rev-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:8px}
+  .rev-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+  .rev-stat .num{font-family:var(--display);font-size:26px;font-weight:600;color:var(--ink)}
+  .rev-stat .lbl{font-size:11.5px;color:var(--ink-faint);font-family:var(--mono);margin-top:2px}
+  .rev-section{margin-top:26px}
+  .rev-section h2{font-family:var(--display);font-size:16px;font-weight:600;margin:0 0 10px}
+  .rev-bar-row{display:grid;grid-template-columns:140px 1fr 90px;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px}
+  .rev-bar-name{font-family:var(--mono);font-weight:600;color:var(--ink)}
+  .rev-bar-track{background:var(--surface-alt);border-radius:6px;height:16px;overflow:hidden;border:1px solid var(--border)}
+  .rev-bar-fill{height:100%;background:var(--accent)}
+  .rev-bar-count{font-family:var(--mono);color:var(--ink-faint);text-align:right}
+  .rev-empty{font-size:12.5px;color:var(--ink-faint);font-style:italic;padding:6px 0}
+  table.rev-table{border-collapse:collapse;width:100%;min-width:900px;font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+  table.rev-table th{text-align:left;font-family:var(--sans);font-weight:600;padding:9px 12px;border-bottom:1px solid var(--border-strong);color:var(--ink-soft)}
+  table.rev-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--mono)}
+  .rev-skew-cell{font-weight:700;background:var(--surface-alt);border-left:3px solid var(--ink);border-right:3px solid var(--ink)}
+  table.rev-table tr:last-child td{border-bottom:none}
+  .rev-note{border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.5;background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);margin-bottom:8px}
+  .rev-note:last-child{margin-bottom:0}
+  .rev-note.warn{border-left:4px solid var(--ink);font-weight:600;background:var(--surface-alt)}
+  .rev-gonogo{margin-top:26px;border-radius:12px;padding:18px 20px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink);border:1px solid var(--border-strong)}
+  .rev-gonogo.notready{border-left:5px solid var(--ink);background:var(--surface-alt)}
+  .rev-gonogo ul{margin:6px 0 0;padding-left:20px;font-weight:400;font-size:13px}
+
+  @media (max-width:760px){
+    .app{grid-template-columns:1fr}
+    .nav{display:none}
+    main{padding:24px 16px 60px}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <nav class="nav">
+    <div class="nav-brand">Scientific Dataset Curation and Labelling Workbench</div>
+    <div class="nav-step" id="nav-step-1">
+      <div class="nav-dot">1</div>
+      <div><div class="nav-title">Task</div><div class="nav-hint">Name it, describe it, define labels</div></div>
+    </div>
+    <div class="nav-step" id="nav-step-2">
+      <div class="nav-dot">2</div>
+      <div><div class="nav-title">Dataset Discovery &amp; Review</div><div class="nav-hint">Search, add, read AI Extracted Information</div></div>
+    </div>
+    <div class="nav-step locked" id="nav-step-3">
+      <div class="nav-dot">3</div>
+      <div><div class="nav-title">Sample Curation &amp; Labelling</div><div class="nav-hint">Index, hints, Label per row</div></div>
+    </div>
+    <div class="nav-step locked" id="nav-step-4">
+      <div class="nav-dot">4</div>
+      <div><div class="nav-title">Collection Review</div><div class="nav-hint">Totals, balance, coverage, go/no-go</div></div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="wrap">
+
+      <!-- ============ CONNECT PROJECT FOLDER ============ -->
+      <div id="connect-view">
+        <div class="page-head"><h1>Connect Project Folder</h1></div>
+        <div class="panel">
+          <p class="ctx-purpose" style="margin:0 0 14px;">
+            Tasks, datasets, and sample decisions are saved as real JSON files
+            on your computer -- not in the browser. Pick the <code>RNA-project</code>
+            folder to connect it; the app reads/writes its <code>tasks/</code>
+            subfolder directly.
+          </p>
+          <p class="ctx-purpose" style="margin:0 0 18px;color:var(--ink-faint);font-size:12px;">
+            Needs Chrome, Edge, or Brave. You may need to do this again each
+            time you reopen the app -- that's a browser security requirement
+            for local files, not a bug.
+          </p>
+          <button class="btn btn-primary" id="btn-connect-folder">Connect Project Folder →</button>
+          <p class="ctx-purpose" id="connect-error" style="margin:12px 0 0;color:var(--danger,#B3261E);display:none;"></p>
+        </div>
+      </div>
+
+      <!-- ============ TASK PICKER ============ -->
+      <div id="picker-view" style="display:none">
+        <div class="page-head"><h1>Tasks</h1></div>
+
+        <div class="panel">
+          <h2>Select a Task</h2>
+          <div id="task-list"></div>
+          <div style="margin-top:16px;">
+            <button class="btn btn-primary" id="btn-new-task">+ Create Task</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ TASK WIZARD ============ -->
+      <div id="wizard-view" style="display:none">
+       <div class="wrap-inner">
+        <div class="page-head">
+          <h1 id="wizard-heading">Set up your Task</h1>
+          <span class="status" id="wizard-status">saved</span>
+        </div>
+
+        <div class="step">
+          <div class="step-head"><div class="step-num">1</div><h2>Name the Task</h2></div>
+          <div class="step-sub">Short and specific — this is what you'll find it by later.</div>
+          <div class="field" id="field-name">
+            <input type="text" id="input-name" placeholder="e.g. TB Blood RNA Benchmark">
+            <div class="field-error">Give the Task a name before creating it.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-head"><div class="step-num">2</div><h2>Describe the Task</h2></div>
+          <div class="step-sub">What are you trying to determine? A sentence or two is enough.</div>
+          <div class="field">
+            <textarea id="input-purpose" placeholder="e.g. Collect RNA-seq samples relevant to tuberculosis for disease vs. non-disease comparison."></textarea>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-head"><div class="step-num">3</div><h2>Task Labels</h2></div>
+          <div class="step-sub">Build the exact label list this Task needs — every sample gets one of these later.</div>
+
+          <div class="field" style="margin-top:16px;" id="field-label-input">
+            <label for="input-label">Add a label</label>
+            <div class="label-add-row">
+              <input type="text" id="input-label" placeholder="e.g. LUMINAL A">
+              <button class="btn btn-primary" id="btn-add-label">+ Add label</button>
+            </div>
+            <div class="suggest-row">
+              <span class="suggest-label">Quick add:</span>
+              <button class="suggest-chip" data-suggest="CASE">CASE</button>
+              <button class="suggest-chip" data-suggest="CONTROL">CONTROL</button>
+              <button class="suggest-chip" data-suggest="UNKNOWN">UNKNOWN</button>
+            </div>
+          </div>
+
+          <div class="label-list" id="label-list"></div>
+          <div class="label-count" id="label-count"></div>
+          <div class="field-error" id="label-error" style="display:none;">Add at least one label before creating the Task.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-head"><div class="step-num">4</div><h2>Sample Type</h2></div>
+          <div class="step-sub">Which biological source is this Task about?</div>
+          <div class="field" id="field-sample-type">
+            <select id="input-sample-type">
+              <option value="">Select a sample type…</option>
+              <optgroup label="Blood">
+                <option>Blood - Whole Blood</option>
+                <option>Blood - PBMC</option>
+                <option>Blood - Buffy Coat</option>
+                <option>Blood - Leukocytes</option>
+                <option>Blood - Plasma</option>
+                <option>Blood - Serum</option>
+              </optgroup>
+              <optgroup label="Tissue">
+                <option>Tissue - Lung</option>
+                <option>Tissue - Liver</option>
+                <option>Tissue - Brain</option>
+                <option>Tissue - Breast</option>
+                <option>Tissue - Kidney</option>
+                <option>Tissue - Heart</option>
+                <option>Tissue - Colon</option>
+                <option>Tissue - Muscle</option>
+                <option>Tissue - Skin</option>
+                <option>Tissue - Pancreas</option>
+              </optgroup>
+              <optgroup label="Other sources">
+                <option>Saliva / Oral</option>
+                <option>Nasal / Respiratory</option>
+                <option>Stool / Feces</option>
+                <option>Urine</option>
+                <option>Bone Marrow</option>
+                <option>Tumor / Cancer</option>
+                <option>Cell Culture / Cell Line</option>
+                <option>Other / Unknown</option>
+              </optgroup>
+            </select>
+            <div class="field-error">Pick a sample type before creating the Task.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-head"><div class="step-num">5</div><h2>Sequence Type</h2></div>
+          <div class="step-sub">Which assay produced (or will produce) these samples?</div>
+          <div class="field" id="field-sequence-type">
+            <select id="input-sequence-type">
+              <option value="">Select a sequence type…</option>
+              <option>Bulk RNA-seq</option>
+              <option>Single-cell RNA-seq</option>
+              <option>Single-nucleus RNA-seq</option>
+              <option>Spatial RNA-seq</option>
+            </select>
+            <div class="field-error">Pick a sequence type before creating the Task.</div>
+          </div>
+        </div>
+
+        <div class="wizard-footer">
+          <button class="btn" id="btn-cancel-wizard">Cancel</button>
+          <button class="btn btn-danger" id="btn-delete-task" style="display:none;margin-right:auto;">Delete Task</button>
+          <button class="btn btn-primary" id="btn-save-task">Create Task →</button>
+        </div>
+       </div>
+      </div>
+
+      <!-- ============ STAGE 2: DATASET DISCOVERY & REVIEW ============ -->
+      <div id="discovery-view" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+          <button class="btn btn-sm" id="btn-back-to-tasks">← Back to Tasks</button>
+          <button class="btn btn-primary btn-sm" id="btn-open-review">Collection Review →</button>
+        </div>
+
+        <div id="task-context-sentinel"></div>
+        <div class="panel" id="task-context-panel">
+          <h2 id="ctx-task-name"></h2>
+          <p class="ctx-purpose" id="ctx-task-purpose"></p>
+          <div class="ctx-meta">
+            <span id="ctx-task-types"></span>
+          </div>
+          <div class="ctx-labels" id="ctx-task-labels"></div>
+          <div class="ctx-collection-badge" id="ctx-collection-line"></div>
+        </div>
+
+        <div class="page-head">
+          <h1>Dataset Discovery</h1>
+          <div class="list-sub" id="disc-counter">0 / 75 reviewed</div>
+        </div>
+
+        <div class="search-row">
+          <input type="text" id="disc-search-input" placeholder="e.g. TB based datasets, blood cancer, whole blood RNA-seq">
+          <button class="btn btn-primary" id="disc-search-btn" style="margin:2px;">Search</button>
+        </div>
+        <div class="match-trace" id="disc-trace"></div>
+
+        <div class="filter-bar">
+          <span id="disc-count-label">Showing all datasets</span>
+          <div class="filter-tabs" id="disc-filter-tabs">
+            <button data-f="all" class="active">All</button>
+            <button data-f="unreviewed">Unreviewed</button>
+            <button data-f="included">Included</button>
+            <button data-f="excluded">Excluded</button>
+            <button data-f="unsure">Needs Review</button>
+          </div>
+        </div>
+
+        <div id="disc-list"></div>
+      </div>
+
+      <!-- ============ STAGE 4-5: SAMPLE CURATION + LABELLING ============ -->
+      <div id="curation-view" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+          <button class="btn btn-sm" id="btn-back-to-discovery">← Back to Dataset Discovery</button>
+          <div style="display:flex;gap:8px;">
+            <div class="cur-export-wrap">
+              <button class="btn btn-sm" id="btn-export-csv-toggle">Export CSV ▾</button>
+              <div class="cur-export-menu" id="cur-export-menu">
+                <button id="btn-export-csv-all">Export All</button>
+                <button id="btn-export-csv-retained">Export Retained</button>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-open-review-from-cur">Collection Review →</button>
+          </div>
+        </div>
+
+        <div class="page-head">
+          <div id="cur-dataset-heading-wrap">
+            <h1 id="cur-dataset-id"></h1>
+            <span class="cur-dataset-accession" id="cur-dataset-accession"></span>
+            <span class="cur-dataset-tap-hint" id="cur-dataset-tap-hint">▸ Click to see dataset info</span>
+          </div>
+          <div class="cur-progress-badge" id="cur-progress"></div>
+        </div>
+        <div class="panel" id="cur-task-context-panel">
+          <h2 id="cur-ctx-task-name"></h2>
+          <span class="ctx-meta" id="cur-ctx-task-types"></span>
+        </div>
+
+        <div id="cur-loading" class="empty-list-msg" style="display:none;">Loading sample data…</div>
+
+        <div id="cur-table-wrap">
+          <!-- View-only progress table: see what's done, jump into a sample. All
+               actual curation happens in #sample-editor-view, not here. -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <div class="cur-legend">
+              <span class="cur-legend-item"><span class="cur-legend-swatch keep"></span> Keep</span>
+              <span class="cur-legend-item"><span class="cur-legend-swatch reject"></span> Reject</span>
+              <span class="cur-legend-item"><span class="cur-legend-swatch skip"></span> Skip</span>
+              <span class="cur-legend-item"><span class="cur-legend-swatch"></span> not labelled</span>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-start-labelling">Start Labelling →</button>
+          </div>
+          <div class="tbl-scroll">
+            <table class="cur-table" id="cur-table">
+              <colgroup>
+                <col class="col-idx">
+                <col class="col-snippet">
+                <col class="col-blood">
+                <col class="col-decision">
+                <col class="col-label">
+                <col class="col-menu">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="c-idx">#</th>
+                  <th>Sample Snippet</th>
+                  <th>Blood/Tissue</th>
+                  <th>Keep / Reject / Skip</th>
+                  <th>Label</th>
+                  <th class="c-menu"></th>
+                </tr>
+              </thead>
+              <tbody id="cur-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="pager" id="cur-pager"></div>
+
+          <div class="cur-footer">
+            <button class="btn btn-danger" id="btn-reset-dataset">Reset Dataset</button>
+            <button class="btn btn-primary" id="btn-save-exit" style="margin-left:auto;">Save and Exit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ONE-SAMPLE-AT-A-TIME CURATION EDITOR ============ -->
+      <div id="sample-editor-view" style="display:none">
+       <div class="editor-inner">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+          <button class="btn btn-sm" id="btn-editor-back">← Back to progress</button>
+          <div class="list-sub" id="editor-progress"></div>
+        </div>
+
+        <div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;">
+          <div>
+            <h1 id="editor-counter"></h1>
+            <div class="editor-progress-line" id="editor-progress-line"></div>
+          </div>
+          <div class="editor-task-info" id="editor-task-info"></div>
+        </div>
+
+        <div class="panel snippet-card" id="snippet-card"></div>
+
+        <div class="panel editor-fields">
+          <div class="editor-field">
+            <label for="editor-blood">Blood/Tissue Based RNA</label>
+            <select id="editor-blood" class="cur-select">
+              <option value="blood_based">Blood based</option>
+              <option value="tissue_based">Tissue based</option>
+              <option value="unsure">Unsure</option>
+            </select>
+            <p class="editor-hint" id="editor-blood-hint"></p>
+          </div>
+
+          <div class="editor-field">
+            <label for="editor-decision">Curation <span class="req-asterisk">*</span></label>
+            <!-- Kept as the real, unchanged control the rest of the app reads/writes
+                 (.value, change event) -- visually hidden, driven by the segmented
+                 buttons below so no save/validation/resume logic has to change. -->
+            <select id="editor-decision" class="cur-select" style="display:none;">
+              <option value="">— select —</option>
+              <option value="Keep">Keep</option>
+              <option value="Reject">Reject</option>
+              <option value="Skip">Skip</option>
+            </select>
+            <div class="decision-seg" role="group" aria-label="Keep, Reject, or Skip">
+              <button type="button" class="decision-seg-btn keep" data-val="Keep">Keep</button>
+              <button type="button" class="decision-seg-btn reject" data-val="Reject">Reject</button>
+              <button type="button" class="decision-seg-btn skip" data-val="Skip">Skip</button>
+            </div>
+          </div>
+
+          <div class="editor-field" id="editor-label-field">
+            <label for="editor-label">Label <span class="req-asterisk" id="editor-label-req" style="display:none;">*</span></label>
+            <select id="editor-label" class="cur-select" disabled title="Select Keep first"></select>
+            <p class="editor-hint" id="editor-label-hint">Available after selecting Keep</p>
+          </div>
+        </div>
+
+        <div class="cur-footer">
+          <button class="btn btn-sm" id="btn-editor-prev">← Previous</button>
+          <button class="btn btn-primary" id="btn-editor-save-next" style="margin-left:auto;">Save &amp; Next →</button>
+        </div>
+       </div>
+      </div>
+
+      <!-- ============ STAGE 6: COLLECTION REVIEW ============ -->
+      <div id="review-view" style="display:none">
+        <button class="btn btn-sm" id="btn-back-from-review" style="margin-bottom:16px;">← Back to Dataset Discovery</button>
+
+        <div class="page-head">
+          <h1 id="rev-task-name"></h1>
+          <div class="list-sub">Collection Review</div>
+        </div>
+
+        <div id="rev-loading" class="empty-list-msg" style="display:none;">Loading sample data…</div>
+
+        <div id="rev-body" style="display:none;">
+          <div class="rev-stats" id="rev-stats"></div>
+
+          <div class="rev-section">
+            <h2>Label breakdown</h2>
+            <div id="rev-label-breakdown"></div>
+          </div>
+
+          <div class="rev-section">
+            <h2>Per-dataset table</h2>
+            <div class="tbl-scroll">
+              <table class="rev-table" id="rev-dataset-table"></table>
+            </div>
+          </div>
+
+          <div class="rev-section">
+            <h2>Balance check</h2>
+            <div id="rev-balance"></div>
+          </div>
+
+          <div class="rev-section">
+            <h2>Coverage check</h2>
+            <div id="rev-coverage"></div>
+          </div>
+
+          <div id="rev-gonogo"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="raw-popover" id="raw-popover">
+  <div class="raw-popover-head">
+    <span id="raw-popover-title"></span>
+    <button class="raw-popover-close" id="raw-popover-close" aria-label="Close">✕</button>
+  </div>
+  <pre id="raw-popover-body"></pre>
+</div>
+
+<div class="raw-popover" id="ds-hover-popover">
+  <div class="raw-popover-head">
+    <span id="ds-hover-popover-title"></span>
+  </div>
+  <div id="ds-hover-popover-body"></div>
+</div>
+
+<script src="../generated/data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Local-disk persistence (File System Access API) ----------
+  // Replaces localStorage entirely. This is a plain double-clicked file://
+  // page, and browsers block JS on file:// from writing anywhere on disk
+  // without explicit permission -- showDirectoryPicker() asks for that
+  // permission once (a native folder picker over RNA-project/), then
+  // reads/writes real JSON files under RNA-project/tasks/. Still no
+  // server, no framework -- one self-contained index.html.
+  //
+  // Reads stay SYNCHRONOUS via in-memory caches (tasksCache,
+  // sampleDecisionsCache) so most existing call sites (loadTasks().find(),
+  // etc.) need no changes at all. Every WRITE both updates the relevant
+  // cache and flushes straight to disk in the same action -- disk is the
+  // source of truth; the cache only avoids re-reading files on every
+  // render. Nothing here uses localStorage/sessionStorage/IndexedDB/cookies.
+  let projectDirHandle = null;
+  let tasksDirHandle = null;
+  let tasksCache = [];
+
+  function isFsAccessSupported(){
+    return typeof window.showDirectoryPicker === "function";
+  }
+
+  async function connectProjectFolder(){
+    if (!isFsAccessSupported()){
+      alert("Saving to local files needs Chrome, Edge, or Brave -- this browser doesn't support it.");
+      return false;
+    }
+    try {
+      projectDirHandle = await window.showDirectoryPicker({ id: "rna-project", mode: "readwrite" });
+      tasksDirHandle = await projectDirHandle.getDirectoryHandle("tasks", { create: true });
+      await refreshTasksCache();
+      return true;
+    } catch (e) {
+      return false; // user cancelled the picker, or denied permission
+    }
+  }
+
+  async function readJsonFile(dirHandle, filename, fallback){
+    try {
+      const fh = await dirHandle.getFileHandle(filename);
+      const file = await fh.getFile();
+      return JSON.parse(await file.text());
+    } catch (e) {
+      return fallback;
+    }
+  }
+  async function writeJsonFile(dirHandle, filename, obj){
+    const fh = await dirHandle.getFileHandle(filename, { create: true });
+    const w = await fh.createWritable();
+    await w.write(JSON.stringify(obj, null, 2));
+    await w.close();
+  }
+  async function listTaskFolderNames(){
+    const names = [];
+    for await (const [name, handle] of tasksDirHandle.entries()){
+      if (handle.kind === "directory" && /^task_\d+$/.test(name)) names.push(name);
+    }
+    return names.sort();
+  }
+  async function nextTaskFolderId(){
+    const names = await listTaskFolderNames();
+    let max = 0;
+    names.forEach(n => { const m = /^task_(\d+)$/.exec(n); if (m) max = Math.max(max, parseInt(m[1], 10)); });
+    return `task_${String(max + 1).padStart(3, "0")}`;
+  }
+  // e.g. {data_source:"sra", project:"ERP012914"} -> "SRA_ERP012914.json"
+  function datasetFileName(ds){
+    return `${(ds && ds.data_source ? ds.data_source : "").toUpperCase()}_${ds ? ds.project : ""}.json`;
+  }
+
+  // ---------- Tasks ----------
+  async function refreshTasksCache(){
+    const names = await listTaskFolderNames();
+    const tasks = [];
+    for (const name of names){
+      const dir = await tasksDirHandle.getDirectoryHandle(name);
+      const t = await readJsonFile(dir, "task.json", null);
+      if (t) tasks.push(t);
+    }
+    tasksCache = tasks;
+    return tasksCache;
+  }
+  function loadTasks(){
+    return tasksCache; // sync -- reads the in-memory cache, kept fresh by refreshTasksCache()/persistTask()
+  }
+  async function persistTask(task){
+    const dir = await tasksDirHandle.getDirectoryHandle(task.id, { create: true });
+    await writeJsonFile(dir, "task.json", task);
+    const idx = tasksCache.findIndex(t => t.id === task.id);
+    if (idx === -1) tasksCache.push(task); else tasksCache[idx] = task;
+  }
+  async function deleteTaskFolder(taskId){
+    await tasksDirHandle.removeEntry(taskId, { recursive: true });
+    tasksCache = tasksCache.filter(t => t.id !== taskId);
+  }
+
+  let editingTaskId = null;   // null while creating a new Task
+  let draftLabels = [];       // labels being built in the wizard, before save
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(msg){
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  // ---------- Picker ----------
+  function renderPicker(){
+    const tasks = loadTasks();
+    const listEl = document.getElementById("task-list");
+    listEl.innerHTML = tasks.length
+      ? tasks.map(t => `
+          <div class="task-row" data-id="${escapeHtml(t.id)}">
+            <div class="task-row-text">
+              <div class="name">${escapeHtml(t.name)}</div>
+              ${t.purpose ? `<div class="purpose">${escapeHtml(t.purpose)}</div>` : ""}
+              <div class="labels">${t.labels.length} label${t.labels.length === 1 ? "" : "s"}: ${t.labels.map(escapeHtml).join(" / ")}</div>
+              <div class="labels">${escapeHtml(t.sampleType || "no sample type")} &middot; ${escapeHtml(t.sequenceType || "no sequence type")}</div>
+            </div>
+            <div class="task-row-actions">
+              <button class="btn btn-edit btn-sm" data-edit="${escapeHtml(t.id)}">Edit</button>
+              <button class="btn btn-primary btn-sm" data-select="${escapeHtml(t.id)}">Select →</button>
+            </div>
+          </div>`).join("")
+      : `<div class="empty-msg">No Tasks yet — create your first one below.</div>`;
+
+    listEl.querySelectorAll("[data-edit]").forEach(btn => {
+      btn.addEventListener("click", () => openWizard(btn.dataset.edit));
+    });
+    listEl.querySelectorAll("[data-select]").forEach(btn => {
+      btn.addEventListener("click", () => openDiscovery(btn.dataset.select));
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+  }
+
+  // Best short, human-readable name for a dataset, since DATASETS[] has no
+  // actual "name"/"title" field. Primary source is a short biological tag
+  // (disease/tissue/pathogen/...), a few words at most -- a real "name",
+  // not a sentence. The full study title (can run 100+ chars) is only used
+  // as a last-resort fallback when a dataset has no usable tag at all. The
+  // accession id (ERP012914, BRCA, ...) is always shown separately as a
+  // secondary identifier -- .cur-dataset-accession in openCuration() --
+  // never the main name here.
+  const NAME_TAG_PRIORITY = ["disease", "pathogen", "tissue", "specimen", "cell_line", "other"];
+  // A dataset can have more than one "other" tag (the catch-all category) --
+  // prefer one that describes the biological subject over one that just
+  // names the lab method (e.g. "human-mouse cell mixture" over "single-cell
+  // rna sequencing"), since the method isn't what makes a dataset findable.
+  const NAME_METHOD_WORDS = ["sequencing", "rna-seq", "assay", "profiling"];
+  function datasetTagFallbackName(ds){
+    const tags = (ds.tags || []).filter(t => t.value && t.value !== "unknown");
+    for (const cat of NAME_TAG_PRIORITY){
+      const candidates = tags.filter(t => t.category === cat);
+      if (!candidates.length) continue;
+      const best = candidates.find(t => !NAME_METHOD_WORDS.some(w => t.value.includes(w))) || candidates[0];
+      return best.value.replace(/\b\w/g, c => c.toUpperCase());
+    }
+    return null;
+  }
+  function datasetDisplayName(ds){
+    if (!ds) return "";
+    // 1. Curated display_name, when one's been reviewed and set for this
+    // dataset (enrichment/tags.jsonl) -- takes priority over the automatic
+    // tag-guess below.
+    if (ds.display_name) return ds.display_name;
+    // 2. Short biological tag first -- this is the actual "name".
+    const tagName = datasetTagFallbackName(ds);
+    if (tagName) return tagName;
+    // 2. No tag at all -- fall back to the dataset/study's real title
+    // (e.g. SRP066781, which has a title but no usable tag).
+    const raw = ds.raw_evidence || "";
+    if (ds.data_source === "sra"){
+      const m = /- study_title:\s*(.+?)(?=\n-|\n\n|$)/s.exec(raw);
+      if (m) return m[1].trim();
+    } else if (ds.data_source === "tcga"){
+      const m = /gdc_cases\.project\.name=([^;]+)/.exec(raw);
+      if (m) return m[1].trim();
+    } else if (ds.data_source === "gtex"){
+      const m = /gtex\.smtsd=([^;]+)/.exec(raw);
+      if (m && m[1].trim() !== "None") return m[1].trim();
+      const m2 = /gtex\.smts=([^;]+)/.exec(raw);
+      if (m2 && m2[1].trim() !== "None") return m2[1].trim();
+    }
+    return ds.project; // truly nothing to name it from (e.g. STUDY_NA -- GTEx's own source data is blank here)
+  }
+
+  // The tags/AI-suggested/AI-Extracted-Information/raw-evidence block shown
+  // on a Discovery card -- factored out so the same content can also be
+  // shown in the Sample Curation heading's hover card (datasetInfoCardHtml
+  // below), instead of duplicating this markup in two places.
+  // ds.raw_evidence is a free-text block, mostly "- key: value" lines (see
+  // extract_tags.py) with a couple of plain heading lines ("Project: ...",
+  // "Study-level text fields:") mixed in -- bold+underline whatever's
+  // before the first ":" on each line, same look as the per-sample raw
+  // dump (formatRawHtml below), instead of showing it as one flat
+  // unformatted paragraph.
+  function formatRawEvidenceHtml(text){
+    if (!text) return "";
+    return text.split("\n").map(line => {
+      const m = /^(-\s*)?([^:\n]+):(.*)$/.exec(line);
+      if (!m) return escapeHtml(line);
+      const [, dash, key, rest] = m;
+      return `${dash ? escapeHtml(dash) : ""}<span class="rk">${escapeHtml(key)}:</span>${escapeHtml(rest)}`;
+    }).join("\n");
+  }
+
+  // ---------- Recount3 Info (live fetch) ----------
+  // Pulls the same 6 columns recount3's own Shiny "study explorer" shows
+  // (organism, project_home, project, n_samples, study_title,
+  // study_abstract), straight from recount3's public S3 bucket -- no local
+  // copy, no pre-built file. Mirrors the exact logic recount3-docs' own
+  // study-explorer/obtain_abstracts.R uses:
+  // https://github.com/LieberInstitute/recount3-docs/blob/master/study-explorer/obtain_abstracts.R
+  //   - organism / project_home / n_samples: counted from the project's own
+  //     <source>.recount_project.<PROJECT>.MD.gz file (one row per sample).
+  //   - study_title / study_abstract: gtex/tcga use fixed template text
+  //     (matches upstream -- not fetched); sra reads the real fields from
+  //     the first row of <source>.<source>.<PROJECT>.MD.gz.
+  // Bucket is plain HTTPS with open CORS (Access-Control-Allow-Origin: *,
+  // verified), so a direct browser fetch works; files are gzip, decompressed
+  // here with the browser's native DecompressionStream (Chrome/Edge; no
+  // library needed).
+  const RECOUNT3_BASE = "https://recount-opendata.s3.amazonaws.com/recount3/release/human/data_sources";
+
+  const GTEX_ABSTRACT = "The Genotype-Tissue Expression (GTEx) project is an ongoing effort to build a comprehensive public resource to study tissue-specific gene expression and regulation. Samples were collected from 54 non-diseased tissue sites across nearly 1000 individuals, primarily for molecular assays including WGS, WES, and RNA-Seq. Remaining samples are available from the GTEx Biobank. The GTEx Portal provides open access to data including gene expression, QTLs, and histology images. Check <https://gtexportal.org/> for more information on the GTEx project.";
+  const TCGA_ABSTRACT = "The Cancer Genome Atlas (TCGA), a landmark cancer genomics program, molecularly characterized over 20,000 primary cancer and matched normal samples spanning 33 cancer types. This joint effort between the National Cancer Institute and the National Human Genome Research Institute began in 2006, bringing together researchers from diverse disciplines and multiple institutions. Check <https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga> for more information on the TCGA project.";
+
+  // project -> Promise<info>, so re-opening a card (or two cards for the
+  // same project) never re-fetches.
+  const recount3InfoCache = {};
+
+  async function fetchGzTsv(url){
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
+    if (typeof DecompressionStream === "undefined"){
+      throw new Error("This browser has no native gzip decompression (DecompressionStream) -- try Chrome or Edge.");
+    }
+    const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
+    const text = await new Response(stream).text();
+    const lines = text.split("\n").filter(Boolean);
+    if (!lines.length) return [];
+    const header = lines[0].split("\t");
+    return lines.slice(1).map(line => {
+      const vals = line.split("\t");
+      const obj = {};
+      header.forEach((h, i) => { obj[h] = vals[i]; });
+      return obj;
+    });
+  }
+
+  function fetchRecount3Info(ds){
+    if (recount3InfoCache[ds.project]) return recount3InfoCache[ds.project];
+    const source = ds.data_source;
+    const folder = ds.project.slice(-2);
+    const promise = (async () => {
+      const projUrl = `${RECOUNT3_BASE}/${source}/metadata/${folder}/${ds.project}/${source}.recount_project.${ds.project}.MD.gz`;
+      const rows = await fetchGzTsv(projUrl);
+      const first = rows[0] || {};
+      const organism = first.organism || "Homo sapiens";
+      const project_home = first.file_source || `data_sources/${source}`;
+      const n_samples = rows.length;
+
+      let study_title = "", study_abstract = "";
+      if (source === "gtex"){
+        study_title = `GTEx v8 data for tissue: ${ds.project.replace(/_/g, " ").toLowerCase()}`;
+        study_abstract = GTEX_ABSTRACT;
+      } else if (source === "tcga"){
+        study_title = `TCGA data for tissue: ${ds.project}`;
+        study_abstract = TCGA_ABSTRACT;
+      } else {
+        const sampleUrl = `${RECOUNT3_BASE}/${source}/metadata/${folder}/${ds.project}/${source}.${source}.${ds.project}.MD.gz`;
+        const srows = await fetchGzTsv(sampleUrl);
+        const srow = srows[0] || {};
+        study_title = srow.study_title || "";
+        study_abstract = srow.study_abstract || "";
+      }
+      return { organism, project_home, project: ds.project, n_samples, study_title, study_abstract };
+    })();
+    recount3InfoCache[ds.project] = promise;
+    return promise;
+  }
+
+  function recount3InfoTableHtml(info){
+    const cols = [
+      ["organism", "organism"], ["project_home", "project_home"], ["project", "project"],
+      ["n_samples", "n_samples"], ["study_title", "study_title"], ["study_abstract", "study_abstract"],
+    ];
+    // Every cell stays single-line except study_abstract, which wraps and
+    // clamps to 6 lines with a "More" toggle to expand it in place -- the
+    // rest of the table (organism, project_home, project, n_samples,
+    // study_title) is short enough to just scroll left-right for, inside
+    // .r3-scroll's overflow-x:auto.
+    const cellHtml = (k, v) => {
+      const text = escapeHtml(String(v ?? ""));
+      if (k === "study_abstract"){
+        return `<td class="r3-abstract">
+          <div class="r3-abstract-text">${text}</div>
+          <button type="button" class="r3-abstract-more">More</button>
+        </td>`;
+      }
+      if (k === "study_title") return `<td class="r3-title">${text}</td>`;
+      return `<td>${text}</td>`;
+    };
+    return `
+      <p class="r3-info-heading">Recount3 Info</p>
+      <div class="r3-scroll">
+        <table class="r3-table">
+          <tr>${cols.map(([, label]) => `<th>${escapeHtml(label)}</th>`).join("")}</tr>
+          <tr>${cols.map(([k]) => cellHtml(k, info[k])).join("")}</tr>
+        </table>
+      </div>`;
+  }
+
+  // Called once per card, the first time its "Dataset information" toggle
+  // is opened -- fills in the slot left by datasetInfoCardHtml below.
+  async function fillRecount3InfoSlot(ds, slot){
+    try {
+      const info = await fetchRecount3Info(ds);
+      slot.innerHTML = recount3InfoTableHtml(info);
+      const moreBtn = slot.querySelector(".r3-abstract-more");
+      const abstractText = slot.querySelector(".r3-abstract-text");
+      if (moreBtn && abstractText){
+        moreBtn.addEventListener("click", () => {
+          const expanded = abstractText.classList.toggle("r3-expanded");
+          moreBtn.textContent = expanded ? "Less" : "More";
+        });
+      }
+    } catch (err){
+      slot.innerHTML = `<p class="r3-info-heading">Recount3 Info</p><p class="r3-error">Couldn't fetch recount3 info live: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  // ---------- Source Link row (top of card) ----------
+  // GTEx: all 28 GTEx tissue projects here are one single consortium-wide
+  // sequencing release (GTEx v8) -- there's no per-tissue paper, every
+  // tissue's data comes out of the same one experiment/release, so every
+  // GTEx card correctly points at the same paper. That's not a mistake --
+  // see GTEX_PAPER_REASON below for the biologist-facing explanation.
+  const GTEX_PAPER_URL = "https://www.science.org/doi/pdf/10.1126/science.aaz1776";
+  const GTEX_PAPER_LABEL = "The GTEx Consortium atlas of genetic regulatory effects across human tissues (Science, 2020)";
+  const GTEX_PAPER_REASON = "GTEx is a single coordinated experiment, not 54 separate studies: the same ~1000 donors were sampled across their tissues in one collection effort, sequenced together, and released as one dataset (GTEx v8). This one 2020 Science paper is that release's own consortium paper -- it covers all tissues at once, so every GTEx tissue card correctly cites the same paper.";
+  const RECOUNT3_URL = "https://rna.recount.bio/";
+
+  // TCGA: unlike GTEx, each cancer type IS its own separate study -- its
+  // own patients, its own paper -- so every project code gets its own,
+  // individually verified paper link (direct PDF where available; a handful
+  // of NEJM ones are paywalled and link to the DOI landing page instead).
+  const TCGA_PAPER_LINKS = {
+    BLCA: ["Comprehensive Molecular Characterization of Muscle-Invasive Bladder Cancer (Cell, 2017)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2817%2931056-5"],
+    BRCA: ["Comprehensive molecular portraits of human breast tumours (Nature, 2012)", "https://www.nature.com/articles/nature11412.pdf"],
+    CESC: ["Integrated genomic and molecular characterization of cervical cancer (Nature, 2017)", "https://www.nature.com/articles/nature21386.pdf"],
+    COAD: ["Comprehensive molecular characterization of human colon and rectal cancer (Nature, 2012)", "https://www.nature.com/articles/nature11252.pdf"],
+    ESCA: ["Integrated genomic characterization of oesophageal carcinoma (Nature, 2017)", "https://www.nature.com/articles/nature20805.pdf"],
+    GBM: ["The Somatic Genomic Landscape of Glioblastoma (Cell, 2013)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2813%2901208-7"],
+    HNSC: ["Comprehensive genomic characterization of head and neck squamous cell carcinomas (Nature, 2015)", "https://www.nature.com/articles/nature14129.pdf"],
+    KIRC: ["Comprehensive molecular characterization of clear cell renal cell carcinoma (Nature, 2013)", "https://www.nature.com/articles/nature12222.pdf"],
+    KIRP: ["Comprehensive Molecular Characterization of Papillary Renal Cell Carcinoma (NEJM, 2015)", "https://doi.org/10.1056/NEJMoa1505917"],
+    LAML: ["Genomic and epigenomic landscapes of adult de novo acute myeloid leukemia (NEJM, 2013)", "https://doi.org/10.1056/NEJMoa1301689"],
+    LGG: ["Comprehensive, Integrative Genomic Analysis of Diffuse Lower-Grade Gliomas (NEJM, 2015)", "https://doi.org/10.1056/NEJMoa1402121"],
+    LIHC: ["Comprehensive and Integrative Genomic Characterization of Hepatocellular Carcinoma (Cell, 2017)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2817%2930639-6"],
+    LUAD: ["Comprehensive molecular profiling of lung adenocarcinoma (Nature, 2014)", "https://www.nature.com/articles/nature13385.pdf"],
+    LUSC: ["Comprehensive genomic characterization of squamous cell lung cancers (Nature, 2012)", "https://www.nature.com/articles/nature11404.pdf"],
+    OV: ["Integrated genomic analyses of ovarian carcinoma (Nature, 2011)", "https://www.nature.com/articles/nature10166.pdf"],
+    PAAD: ["Integrated Genomic Characterization of Pancreatic Ductal Adenocarcinoma (Cancer Cell, 2017)", "https://www.cell.com/action/showPdf?pii=S1535-6108%2817%2930299-4"],
+    PCPG: ["Comprehensive Molecular Characterization of Pheochromocytoma and Paraganglioma (Cancer Cell, 2017)", "https://www.cell.com/action/showPdf?pii=S1535-6108%2817%2930001-6"],
+    PRAD: ["The Molecular Taxonomy of Primary Prostate Cancer (Cell, 2015)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2815%2901339-2"],
+    READ: ["Comprehensive molecular characterization of human colon and rectal cancer (Nature, 2012)", "https://www.nature.com/articles/nature11252.pdf"],
+    SARC: ["Comprehensive and Integrated Genomic Characterization of Adult Soft Tissue Sarcomas (Cell, 2017)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2817%2931203-5"],
+    SKCM: ["Genomic Classification of Cutaneous Melanoma (Cell, 2015)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2815%2900634-0"],
+    STAD: ["Comprehensive Molecular Characterization of Gastric Adenocarcinoma (Nature, 2014)", "https://www.nature.com/articles/nature13480.pdf"],
+    TGCT: ["Integrated Molecular Characterization of Testicular Germ Cell Tumors (Cell Reports, 2018)", "https://www.cell.com/action/showPdf?pii=S2211-1247%2818%2930785-X"],
+    THCA: ["Integrated Genomic Characterization of Papillary Thyroid Carcinoma (Cell, 2014)", "https://www.cell.com/action/showPdf?pii=S0092-8674%2814%2901238-0"],
+    THYM: ["The Integrated Genomic Landscape of Thymic Epithelial Tumors (Cancer Cell, 2018)", "https://www.cell.com/action/showPdf?pii=S1535-6108%2818%2930003-5"],
+    UCEC: ["Integrated Genomic Characterization of Endometrial Carcinoma (Nature, 2013)", "https://www.nature.com/articles/nature12113.pdf"],
+  };
+  const TCGA_PAPER_REASON = "Unlike GTEx, each TCGA cancer type is its own separate study -- its own patient cohort, its own molecular characterization paper -- so this link is specific to this exact cancer type, not shared with any other TCGA project.";
+
+  // GTEx and TCGA both have verified, correct per-project paper links now.
+  // SRA still needs its own per-project links added the same careful way,
+  // later -- so the box only renders for gtex/tcga for now, rather than show
+  // a guessed/generic link for SRA.
+  function sourceLinkRowHtml(ds){
+    let label, url, reason;
+    if (ds.data_source === "gtex"){
+      label = GTEX_PAPER_LABEL; url = GTEX_PAPER_URL; reason = GTEX_PAPER_REASON;
+    } else if (ds.data_source === "tcga" && TCGA_PAPER_LINKS[ds.project]){
+      [label, url] = TCGA_PAPER_LINKS[ds.project];
+      reason = TCGA_PAPER_REASON;
+    } else {
+      return "";
+    }
+    return `<div class="ds-source-row">
+      <div class="ds-source-box" title="${escapeHtml(reason)}">
+        <span class="src-label">Primary source link:</span>
+        <a href="${url}" target="_blank" rel="noopener">${escapeHtml(label)} ↗</a>
+      </div>
+    </div>`;
+  }
+
+  function datasetInfoCardHtml(ds){
+    const qnaAll = (typeof QNA !== "undefined") ? QNA : {};
+    const structured = ds.tags.filter(t => t.source === "structured_field");
+    const ai = ds.tags.filter(t => t.source === "llm_inferred");
+    const structuredHtml = structured.length
+      ? structured.map(t => `<span class="ds-chip structured">${escapeHtml(t.category)}: ${escapeHtml(t.value)}</span>`).join("")
+      : `<span class="ds-tag-none">none</span>`;
+    const aiHtml = ai.map(t => `<span class="ds-chip ai">${escapeHtml(t.category)}: ${escapeHtml(t.value)}</span>`).join("");
+    const qna = qnaAll[ds.project] || [];
+    const qnaHtml = qna.length ? `
+      <div class="qna-block">
+        <p class="qna-heading">AI Extracted Information <span>(${qna.length} fields, from 5 sampled rows)</span></p>
+        <table class="qna-table">${qna.map(([q, a]) => `<tr><td>${escapeHtml(q.replace(/\?+\s*$/, ""))}</td><td>${escapeHtml(a)}</td></tr>`).join("")}</table>
+      </div>` : "";
+    return `
+      <div class="ds-tag-row"><span class="ds-tag-label">Dataset tags:</span> ${structuredHtml}</div>
+      ${ai.length ? `<div class="ds-tag-row"><span class="ds-tag-label ai">AI suggested:</span> ${aiHtml}</div>` : ""}
+      ${qnaHtml}
+      <details class="ds-info-toggle" data-r3-project="${escapeHtml(ds.project)}"><summary>Dataset information</summary>
+        <div class="r3-info-slot"><p class="r3-loading">Loading recount3 info…</p></div>
+        <pre>${formatRawEvidenceHtml(ds.raw_evidence)}</pre>
+      </details>`;
+  }
+
+  // "key: value" lines -- same real metadata, just not shown as raw JSON
+  // (no {}, no quotes around every key, no trailing commas). Keys are bolded
+  // and sample_attributes (a single "key;;value|key;;value|..." blob) is
+  // exploded into its own indented sub-lines, so it's readable instead of
+  // one long wrapped paragraph.
+  // Renders as a real two-column key/value grid (zebra rows, indented
+  // sub-rows for the nested sample_attributes blob) instead of a flat
+  // "key: value\nkey: value" text dump in a <pre> -- much easier to scan.
+  function formatRawHtml(raw){
+    const obj = raw || {};
+    const keys = Object.keys(obj);
+    if (!keys.length) return `<p class="raw-empty">No raw fields for this row.</p>`;
+    const rows = keys.map(k => {
+      const v = obj[k];
+      if (v === null || v === undefined || v === ""){
+        return `<div class="raw-row"><span class="raw-key">${escapeHtml(k)}</span><span class="raw-val raw-val-empty">—</span></div>`;
+      }
+      if (k === "sample_attributes" && typeof v === "string" && v.includes(";;")){
+        const subRows = v.split("|").filter(Boolean).map(pair => {
+          const [ak, ...rest] = pair.split(";;");
+          const av = rest.join(";;");
+          return `<div class="raw-row raw-row-sub"><span class="raw-key">${escapeHtml(ak)}</span><span class="raw-val">${escapeHtml(av || "—")}</span></div>`;
+        }).join("");
+        return `<div class="raw-row"><span class="raw-key">${escapeHtml(k)}</span><span class="raw-val"></span></div>${subRows}`;
+      }
+      return `<div class="raw-row"><span class="raw-key">${escapeHtml(k)}</span><span class="raw-val">${escapeHtml(v)}</span></div>`;
+    }).join("");
+    return `<div class="raw-grid">${rows}</div>`;
+  }
+
+  // ---------- Wizard ----------
+  function openWizard(taskId){
+    editingTaskId = taskId || null;
+    const t = editingTaskId ? loadTasks().find(x => x.id === editingTaskId) : null;
+
+    document.getElementById("wizard-heading").textContent = t ? "Edit your Task" : "Set up your Task";
+    document.getElementById("btn-save-task").textContent = t ? "Save Changes" : "Create Task →";
+    document.getElementById("btn-delete-task").style.display = t ? "" : "none";
+    document.getElementById("input-name").value = t ? t.name : "";
+    document.getElementById("input-purpose").value = t ? t.purpose : "";
+    document.getElementById("input-sample-type").value = t ? (t.sampleType || "") : "";
+    document.getElementById("input-sequence-type").value = t ? (t.sequenceType || "") : "";
+    draftLabels = t ? t.labels.slice() : [];
+    clearValidation();
+    renderLabelList();
+
+    document.getElementById("picker-view").style.display = "none";
+    document.getElementById("wizard-view").style.display = "";
+    document.getElementById("input-name").focus();
+    setNavStep(1);
+  }
+
+  function closeWizard(){
+    document.getElementById("wizard-view").style.display = "none";
+    document.getElementById("picker-view").style.display = "";
+    setNavStep(1);
+    renderPicker();
+  }
+
+  function clearValidation(){
+    document.getElementById("field-name").classList.remove("invalid");
+    document.getElementById("field-sample-type").classList.remove("invalid");
+    document.getElementById("field-sequence-type").classList.remove("invalid");
+    document.getElementById("label-error").style.display = "none";
+  }
+
+  function renderLabelList(){
+    const listEl = document.getElementById("label-list");
+    const countEl = document.getElementById("label-count");
+    if (!draftLabels.length){
+      listEl.classList.add("empty");
+      listEl.innerHTML = `<span class="label-empty-msg">No labels yet — add one above, or use Quick add.</span>`;
+    } else {
+      listEl.classList.remove("empty");
+      listEl.innerHTML = draftLabels.map(l => `
+        <div class="chip">${escapeHtml(l)} <button class="chip-x" data-remove="${escapeHtml(l)}" aria-label="Remove ${escapeHtml(l)}">✕</button></div>
+      `).join("");
+      listEl.querySelectorAll("[data-remove]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          draftLabels = draftLabels.filter(l => l !== btn.dataset.remove);
+          renderLabelList();
+        });
+      });
+    }
+    countEl.textContent = draftLabels.length
+      ? `${draftLabels.length} label${draftLabels.length === 1 ? "" : "s"} added — this exact list becomes the Label dropdown in Sample Curation.`
+      : "";
+
+    // Grey out Quick-add chips already used.
+    document.querySelectorAll(".suggest-chip").forEach(chip => {
+      chip.disabled = draftLabels.includes(chip.dataset.suggest);
+    });
+  }
+
+  function addLabel(raw){
+    const value = (raw || "").trim().toUpperCase();
+    if (!value) return;
+    if (draftLabels.includes(value)){
+      showToast(`"${value}" is already in the list.`);
+      return;
+    }
+    draftLabels.push(value);
+    renderLabelList();
+  }
+
+  document.getElementById("btn-add-label").addEventListener("click", () => {
+    const input = document.getElementById("input-label");
+    addLabel(input.value);
+    input.value = "";
+    input.focus();
+  });
+  document.getElementById("input-label").addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){
+      e.preventDefault();
+      document.getElementById("btn-add-label").click();
+    }
+  });
+  document.querySelectorAll(".suggest-chip").forEach(chip => {
+    chip.addEventListener("click", () => addLabel(chip.dataset.suggest));
+  });
+
+  document.getElementById("btn-new-task").addEventListener("click", () => openWizard(null));
+  document.getElementById("btn-cancel-wizard").addEventListener("click", closeWizard);
+
+  document.getElementById("btn-save-task").addEventListener("click", async () => {
+    clearValidation();
+    const name = document.getElementById("input-name").value.trim();
+    const purpose = document.getElementById("input-purpose").value.trim();
+    const sampleType = document.getElementById("input-sample-type").value;
+    const sequenceType = document.getElementById("input-sequence-type").value;
+    let hasError = false;
+
+    if (!name){
+      document.getElementById("field-name").classList.add("invalid");
+      hasError = true;
+    }
+    if (!draftLabels.length){
+      document.getElementById("label-error").style.display = "block";
+      hasError = true;
+    }
+    if (!sampleType){
+      document.getElementById("field-sample-type").classList.add("invalid");
+      hasError = true;
+    }
+    if (!sequenceType){
+      document.getElementById("field-sequence-type").classList.add("invalid");
+      hasError = true;
+    }
+    if (hasError) return;
+
+    if (editingTaskId){
+      const task = tasksCache.find(t => t.id === editingTaskId);
+      const merged = Object.assign({}, task, { name, purpose, labels: draftLabels.slice(), sampleType, sequenceType });
+      await persistTask(merged);
+      showToast(`"${name}" updated.`);
+    } else {
+      const id = await nextTaskFolderId();
+      await persistTask({ id, name, purpose, labels: draftLabels.slice(), sampleType, sequenceType, created: Date.now(), datasets: [] });
+      showToast(`"${name}" created.`);
+    }
+    closeWizard();
+  });
+
+  document.getElementById("btn-delete-task").addEventListener("click", async () => {
+    if (!editingTaskId) return;
+    const t = tasksCache.find(x => x.id === editingTaskId);
+    if (!confirm(`Delete "${t ? t.name : "this Task"}"? This cannot be undone.`)) return;
+    await deleteTaskFolder(editingTaskId);
+    showToast(`"${t ? t.name : "Task"}" deleted.`);
+    closeWizard();
+  });
+
+  // =========================================================
+  // ---------- Stage 2: Dataset Discovery & Review ----------
+  // =========================================================
+
+  let currentTaskId = null;
+  let discFilter = "all";
+  let discTerms = [];
+
+  // ---------- Dataset decisions ("Collection") ----------
+  // Stored inside each task's own task.json, as a `datasets` array -- not
+  // a separate file. Matches the instruction that task.json should
+  // "maintain the datasets belonging to that task."
+  // datasets: [{ dataset_id, source, decision: "include"|"exclude"|"unsure", reason }]
+  function getCollection(taskId){
+    const t = tasksCache.find(x => x.id === taskId);
+    const normalized = {};
+    ((t && t.datasets) || []).forEach(d => {
+      normalized[d.dataset_id] = { decision: d.decision, reason: d.reason || "" };
+    });
+    return normalized;
+  }
+  function findOrCreateTaskDataset(task, project){
+    task.datasets = task.datasets || [];
+    let d = task.datasets.find(x => x.dataset_id === project);
+    if (!d){
+      const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(x => x.project === project);
+      d = { dataset_id: project, source: ds ? ds.data_source.toUpperCase() : "", decision: null, reason: "" };
+      task.datasets.push(d);
+    }
+    return d;
+  }
+  async function setDecision(taskId, project, decision){
+    const task = tasksCache.find(t => t.id === taskId);
+    if (!task) return;
+    if (decision === null){
+      task.datasets = (task.datasets || []).filter(d => d.dataset_id !== project);
+    } else {
+      // Preserve any reason already saved for this dataset when just
+      // switching between Include/Exclude/Needs Review.
+      findOrCreateTaskDataset(task, project).decision = decision;
+    }
+    await persistTask(task);
+  }
+  async function setReason(taskId, project, reason){
+    const task = tasksCache.find(t => t.id === taskId);
+    if (!task) return;
+    const d = (task.datasets || []).find(x => x.dataset_id === project);
+    if (!d) return; // no decision yet, nothing to attach a reason to
+    d.reason = reason;
+    await persistTask(task);
+  }
+
+  // One Task = one Collection -- its name/created come straight from the
+  // task itself now, no separate collection-meta file needed.
+  function ensureCollection(taskId, taskName){
+    const t = tasksCache.find(x => x.id === taskId);
+    return { meta: { name: `${taskName} Collection`, created: (t && t.created) || Date.now() }, justCreated: false };
+  }
+
+  function setNavStep(active){
+    for (let step = 1; step <= 4; step++){
+      const el = document.getElementById(`nav-step-${step}`);
+      if (!el) continue;
+      el.className = "nav-step" + (active === step ? " current" : active > step ? " done" : " locked");
+    }
+  }
+
+  async function expandQuery(q){
+    const ql = q.toLowerCase();
+    const stop = ["based", "datasets", "dataset", "data", "for", "the", "with"];
+    const terms = new Set(ql.split(/\s+/).filter(w => w.length > 2 && !stop.includes(w)));
+    const synonyms = (typeof SYNONYMS !== "undefined") ? SYNONYMS : {};
+    for (const key in synonyms){
+      if (ql.includes(key)){
+        terms.add(key);
+        for (const syn of synonyms[key]) terms.add(String(syn).toLowerCase());
+      }
+    }
+    return terms.size ? Array.from(terms) : [ql];
+  }
+
+  function matchInfo(ds, terms){
+    if (!terms.length) return null;
+    const hay = [
+      ds.project.toLowerCase(),
+      ds.raw_evidence.toLowerCase(),
+      ...ds.tags.map(t => (t.category + " " + t.value).toLowerCase()),
+    ];
+    const hits = [];
+    for (const term of terms){
+      // Word-boundary match, not plain substring -- a short term like "tb"
+      // must not match inside an unrelated word like "ACTB".
+      const re = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`);
+      for (const h of hay){
+        if (re.test(h)){ hits.push(term); break; }
+      }
+    }
+    return hits.length ? { count: hits.length, terms: [...new Set(hits)] } : null;
+  }
+
+  function badgeClass(src){
+    return src === "gtex" ? "b-gtex" : src === "tcga" ? "b-tcga" : "b-sra";
+  }
+
+  function openDiscovery(taskId){
+    currentTaskId = taskId;
+    const t = loadTasks().find(x => x.id === taskId);
+    if (!t) return;
+
+    document.getElementById("ctx-task-name").textContent = t.name;
+    document.getElementById("ctx-task-purpose").textContent = t.purpose || "";
+    document.getElementById("ctx-task-purpose").style.display = t.purpose ? "" : "none";
+    document.getElementById("ctx-task-types").textContent = `${t.sampleType || "no sample type"} · ${t.sequenceType || "no sequence type"}`;
+    document.getElementById("ctx-task-labels").innerHTML = t.labels.map(l => `<div class="chip">${escapeHtml(l)}</div>`).join("");
+
+    const { meta, justCreated } = ensureCollection(taskId, t.name);
+    const createdDate = new Date(meta.created).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    document.getElementById("ctx-collection-line").textContent = `Collection: ${meta.name} · created ${createdDate}`;
+    if (justCreated) showToast(`✓ Collection created for "${t.name}"`);
+
+    discFilter = "all";
+    discTerms = [];
+    document.getElementById("disc-search-input").value = "";
+    document.getElementById("disc-trace").innerHTML = "";
+    document.querySelectorAll("#disc-filter-tabs button").forEach(b => b.classList.toggle("active", b.dataset.f === "all"));
+
+    document.getElementById("picker-view").style.display = "none";
+    document.getElementById("wizard-view").style.display = "none";
+    document.getElementById("discovery-view").style.display = "";
+    setNavStep(2);
+    renderDiscoveryList();
+  }
+
+  document.getElementById("btn-back-to-tasks").addEventListener("click", () => {
+    document.getElementById("discovery-view").style.display = "none";
+    document.getElementById("picker-view").style.display = "";
+    setNavStep(1);
+    renderPicker();
+  });
+
+  document.getElementById("disc-search-btn").addEventListener("click", runDiscoverySearch);
+  document.getElementById("disc-search-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){ e.preventDefault(); runDiscoverySearch(); }
+  });
+  async function runDiscoverySearch(){
+    const q = document.getElementById("disc-search-input").value.trim();
+    discTerms = q ? await expandQuery(q) : [];
+    renderDiscoveryList();
+  }
+
+  document.querySelectorAll("#disc-filter-tabs button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      discFilter = btn.dataset.f;
+      document.querySelectorAll("#disc-filter-tabs button").forEach(b => b.classList.toggle("active", b === btn));
+      renderDiscoveryList();
+    });
+  });
+
+  function renderDiscoveryList(){
+    const datasets = (typeof DATASETS !== "undefined") ? DATASETS : [];
+    const collection = getCollection(currentTaskId);
+    const reviewedCount = Object.keys(collection).length;
+    document.getElementById("disc-counter").textContent = `${reviewedCount} / ${datasets.length} reviewed`;
+
+    let rows = datasets.map(ds => ({ ds, match: matchInfo(ds, discTerms) }));
+    rows.sort((a, b) => b.ds.n_samples - a.ds.n_samples);
+    if (discTerms.length){
+      rows = rows.filter(r => r.match);
+      rows.sort((a, b) => b.match.count - a.match.count || b.ds.n_samples - a.ds.n_samples);
+      document.getElementById("disc-trace").innerHTML = discTerms.map(t => `<span class="mchip">${escapeHtml(t)}</span>`).join("");
+    } else {
+      document.getElementById("disc-trace").innerHTML = "";
+    }
+
+    if (discFilter === "unreviewed") rows = rows.filter(r => !collection[r.ds.project]);
+    if (discFilter === "included") rows = rows.filter(r => collection[r.ds.project]?.decision === "include");
+    if (discFilter === "excluded") rows = rows.filter(r => collection[r.ds.project]?.decision === "exclude");
+    if (discFilter === "unsure") rows = rows.filter(r => collection[r.ds.project]?.decision === "unsure");
+
+    document.getElementById("disc-count-label").textContent = discTerms.length
+      ? `${rows.length} matching dataset${rows.length === 1 ? "" : "s"}`
+      : "Showing all datasets";
+
+    const listEl = document.getElementById("disc-list");
+    if (!rows.length){
+      listEl.innerHTML = `<div class="empty-list-msg">No datasets match. Try a broader phrase, or clear filters.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = rows.map(({ ds, match }) => {
+      const rec = collection[ds.project];
+      const dec = rec ? rec.decision : null;
+      const reason = rec ? (rec.reason || "") : "";
+
+      return `
+      <div class="ds-card ${dec === "include" ? "reviewed-included" : dec === "exclude" ? "reviewed-excluded" : ""}" data-project="${escapeHtml(ds.project)}">
+        <div class="ds-row1">
+          <span class="ds-id">${escapeHtml(ds.project)}</span>
+          <span class="ds-badge ${badgeClass(ds.data_source)}">${escapeHtml(ds.data_source)}</span>
+          ${dec === "include" ? `<span class="ds-included-tag">✓ Included in collection</span>` : ""}
+          <span class="ds-n">${ds.n_samples.toLocaleString()} samples</span>
+        </div>
+        ${sourceLinkRowHtml(ds)}
+        ${match ? `<div class="match-trace" style="margin-top:6px;">matched on: ${match.terms.map(escapeHtml).join(", ")}</div>` : ""}
+        ${datasetInfoCardHtml(ds)}
+        <div class="ds-actions">
+          <button class="dbtn ${dec === "include" ? "sel" : ""}" data-d="include">Include</button>
+          <button class="dbtn ${dec === "exclude" ? "sel" : ""}" data-d="exclude">Exclude</button>
+          <button class="dbtn ${dec === "unsure" ? "sel" : ""}" data-d="unsure">Needs Review</button>
+          ${dec === "include" ? `<button class="btn btn-primary preview-btn" data-open-curation="${escapeHtml(ds.project)}">Open Sample Curation →</button>` : ""}
+        </div>
+        ${dec ? `
+        <div class="ds-reason-row">
+          <input type="text" class="ds-reason-input" data-reason-for="${escapeHtml(ds.project)}" value="${escapeHtml(reason)}" placeholder="Add a reason. e.g. Human bulk RNA-seq, blood — matches tuberculosis. Or: excluded, cell-line only, no disease info.">
+        </div>` : ""}
+      </div>`;
+    }).join("");
+
+    listEl.querySelectorAll(".ds-card").forEach(card => {
+      const project = card.dataset.project;
+      const infoToggle = card.querySelector("[data-r3-project]");
+      if (infoToggle){
+        let r3Loaded = false;
+        infoToggle.addEventListener("toggle", () => {
+          if (!infoToggle.open || r3Loaded) return;
+          r3Loaded = true;
+          const found = rows.find(r => r.ds.project === project);
+          const slot = infoToggle.querySelector(".r3-info-slot");
+          if (found && slot) fillRecount3InfoSlot(found.ds, slot);
+        });
+      }
+      card.querySelectorAll(".dbtn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const already = btn.classList.contains("sel");
+          await setDecision(currentTaskId, project, already ? null : btn.dataset.d);
+          renderDiscoveryList();
+        });
+      });
+      const openBtn = card.querySelector("[data-open-curation]");
+      if (openBtn) openBtn.addEventListener("click", () => openCuration(project));
+      const reasonInput = card.querySelector("[data-reason-for]");
+      if (reasonInput){
+        // Debounced -- this fires on every keystroke, and each save writes
+        // a whole task.json to disk; no need to do that per character.
+        let reasonSaveTimer = null;
+        reasonInput.addEventListener("input", () => {
+          clearTimeout(reasonSaveTimer);
+          reasonSaveTimer = setTimeout(() => setReason(currentTaskId, project, reasonInput.value), 400);
+        });
+      }
+    });
+  }
+
+  // =========================================================
+  // ---------- Stages 4-5: Sample Curation + Labelling ----------
+  // =========================================================
+
+  const PAGE_SIZE = 30;
+
+  let curProject = null;
+  let curPage = 0;
+  let samplesDataPromise = null; // resolves once SAMPLES_BY_PROJECT (samples_data.js) is loaded
+
+  // ---------- Sample curation decisions ----------
+  // One JSON file per dataset per task: tasks/task_NNN/SOURCE_DATASETID.json
+  // (e.g. tasks/task_001/SRA_ERP012914.json), keyed by sample_001,
+  // sample_002, ... (the sample's position in SAMPLES_BY_PROJECT[project],
+  // NOT its real run_id) -- each record still carries its own real run_id
+  // so it stays traceable. sampleDecisionsCache re-keys that file by
+  // run_id in memory, so every existing call site (decisions[s.run_id])
+  // keeps working completely unchanged.
+  let sampleDecisionsCache = {};   // { [taskId]: { [project]: { [run_id]: {run_id, blood, condition, curation, label, ts} } } } -- in-memory view
+  let curDatasetFileCache = null;  // the raw sample_NNN-keyed file for whichever dataset is currently open, mirrored to disk on every write
+
+  function sampleKeyForIndex(i){
+    return `sample_${String(i + 1).padStart(3, "0")}`;
+  }
+
+  // Loads tasks/task_NNN/SOURCE_ID.json for one dataset from disk into
+  // both caches. Called whenever Sample Curation is opened for a dataset --
+  // this is what makes "Start Labelling" resume from disk, not localStorage.
+  async function loadDatasetSamplesIntoCache(taskId, ds){
+    const taskDir = await tasksDirHandle.getDirectoryHandle(taskId, { create: true });
+    const fallback = { task_id: taskId, dataset_id: ds.project, source: (ds.data_source || "").toUpperCase(), samples: {} };
+    const data = await readJsonFile(taskDir, datasetFileName(ds), fallback);
+    data.samples = data.samples || {};
+    curDatasetFileCache = data;
+
+    const byRunId = {};
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[ds.project]) || [];
+    samples.forEach((s, i) => {
+      const rec = data.samples[sampleKeyForIndex(i)];
+      if (rec) byRunId[s.run_id] = rec;
+    });
+    sampleDecisionsCache[taskId] = sampleDecisionsCache[taskId] || {};
+    sampleDecisionsCache[taskId][ds.project] = byRunId;
+    return byRunId;
+  }
+
+  function loadSampleDecisions(){
+    return sampleDecisionsCache; // sync -- reads whichever dataset(s) have been loaded into the cache so far
+  }
+  function getSampleRecord(taskId, project, runId){
+    return (sampleDecisionsCache[taskId] && sampleDecisionsCache[taskId][project] && sampleDecisionsCache[taskId][project][runId]) || {};
+  }
+  async function setSampleField(taskId, project, runId, field, value){
+    const ts = Date.now();
+    sampleDecisionsCache[taskId] = sampleDecisionsCache[taskId] || {};
+    sampleDecisionsCache[taskId][project] = sampleDecisionsCache[taskId][project] || {};
+    const rec = Object.assign({ run_id: runId }, sampleDecisionsCache[taskId][project][runId], { [field]: value, ts });
+    sampleDecisionsCache[taskId][project][runId] = rec;
+
+    if (curDatasetFileCache && curDatasetFileCache.dataset_id === project){
+      const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[project]) || [];
+      const idx = samples.findIndex(s => s.run_id === runId);
+      if (idx !== -1){
+        curDatasetFileCache.samples[sampleKeyForIndex(idx)] = rec;
+        const taskDir = await tasksDirHandle.getDirectoryHandle(taskId, { create: true });
+        const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(d => d.project === project);
+        await writeJsonFile(taskDir, datasetFileName(ds), curDatasetFileCache);
+      }
+    }
+  }
+
+  // samples_data.js is ~50MB (every sample, every project) -- loaded once,
+  // lazily, only when a dataset's sample table is actually opened, via a
+  // dynamically injected <script> tag (works under file:// where fetch/XHR
+  // to local files is blocked, unlike a plain script src).
+  function loadSamplesData(){
+    if (typeof SAMPLES_BY_PROJECT !== "undefined") return Promise.resolve();
+    if (samplesDataPromise) return samplesDataPromise;
+    samplesDataPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "../generated/samples_data.js";
+      script.onload = resolve;
+      script.onerror = () => reject(new Error("Could not load samples_data.js -- run build_data.py first."));
+      document.body.appendChild(script);
+    });
+    return samplesDataPromise;
+  }
+
+  async function openCuration(project){
+    curProject = project;
+    curPage = 0;
+
+    const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(d => d.project === project);
+    const displayName = ds ? datasetDisplayName(ds) : project;
+    const curHeadingEl = document.getElementById("cur-dataset-id");
+    curHeadingEl.textContent = displayName;
+    // No title="" here on purpose -- that's a native hover tooltip, and the
+    // whole point of the last fix was removing every hover-triggered popup.
+    // The full name is still reachable: click the heading to open the info
+    // card, which shows it in full at the top.
+    document.getElementById("cur-dataset-accession").textContent = project;
+    const t = loadTasks().find(x => x.id === currentTaskId);
+    document.getElementById("cur-ctx-task-name").textContent = t ? t.name : "";
+    document.getElementById("cur-ctx-task-types").textContent = t
+      ? `${t.sampleType || "no sample type"} · ${t.sequenceType || "no sequence type"}` : "";
+
+    document.getElementById("discovery-view").style.display = "none";
+    document.getElementById("sample-editor-view").style.display = "none";
+    document.getElementById("curation-view").style.display = "";
+    document.getElementById("cur-table-wrap").style.display = "none";
+    document.getElementById("cur-loading").style.display = "";
+    setNavStep(3);
+
+    try {
+      await loadSamplesData();
+    } catch (e) {
+      document.getElementById("cur-loading").textContent = e.message;
+      return;
+    }
+    // Loads tasks/task_NNN/SOURCE_ID.json for this dataset from disk --
+    // this is what makes progress/resume come from the saved file, not
+    // browser state.
+    if (ds) await loadDatasetSamplesIntoCache(currentTaskId, ds);
+    document.getElementById("cur-loading").style.display = "none";
+    document.getElementById("cur-table-wrap").style.display = "";
+    renderCurationTable();
+  }
+
+  document.getElementById("btn-back-to-discovery").addEventListener("click", () => {
+    document.getElementById("curation-view").style.display = "none";
+    document.getElementById("discovery-view").style.display = "";
+    setNavStep(2);
+    renderDiscoveryList();
+  });
+
+  // A sample only counts as "labeled" if it's both Kept AND has a Label --
+  // guards against stale labels left over from before this column existed,
+  // or from a row that got moved to Reject/Skip. Still used by Export
+  // ("labeled only") and the Collection Review rollup.
+  function isLabeledRecord(rec){
+    return !!(rec && rec.curation === "Keep" && rec.label);
+  }
+
+  // Looser than isLabeledRecord -- this is "has the biologist made ANY
+  // decision on this sample" (Keep, Reject, or Skip), used for the progress
+  // table's green/white rows and for Start Labelling's resume point. Skip
+  // still counts as "decided" here because the biologist did make an
+  // explicit choice, even though the choice was "revisit later" -- it's a
+  // real decision, not silence. Only a row with no curation value at all
+  // (never touched) stays white/pending.
+  function hasDecision(rec){
+    return !!(rec && rec.curation);
+  }
+
+  // rec.curation now stores the display text itself ("Keep"/"Reject"/
+  // "Skip"), so this is just a fallback for an empty/unrecognized value.
+  function decisionOnlyText(rec){
+    if (!rec || !rec.curation) return "—";
+    if (rec.curation === "Keep" || rec.curation === "Reject" || rec.curation === "Skip") return rec.curation;
+    return "—";
+  }
+
+  // "keep"/"reject"/"skip"/"" -- drives both the row's color and the
+  // Keep/Reject/Skip cell's text color, so the two always agree.
+  function decisionClass(rec){
+    if (!rec || !rec.curation) return "";
+    if (rec.curation === "Keep") return "keep";
+    if (rec.curation === "Reject") return "reject";
+    if (rec.curation === "Skip") return "skip";
+    return "";
+  }
+
+  function bloodDisplayText(rec){
+    if (!rec || !rec.blood) return "—";
+    if (rec.blood === "blood_based") return "Blood based";
+    if (rec.blood === "tissue_based") return "Tissue based";
+    if (rec.blood === "unsure") return "Unsure";
+    return "—";
+  }
+
+  // A sample's own free-text "Description" field, if it genuinely has one --
+  // lives inside the sample_attributes blob (the same "key;;value|key;;value"
+  // format formatRawHtml() explodes). Deliberately does NOT fall back to
+  // sample_title/experiment_title -- those are just titles, not a real
+  // description, and showing one as if it were a description is misleading
+  // (a title tells you the study name, not what the sample actually is).
+  function extractSampleDescription(raw){
+    if (!raw) return null;
+    if (typeof raw.sample_attributes === "string"){
+      for (const pair of raw.sample_attributes.split("|")){
+        const [k, ...rest] = pair.split(";;");
+        if (k && k.trim().toLowerCase() === "description"){
+          const v = rest.join(";;").trim();
+          if (v) return v;
+        }
+      }
+    }
+    if (typeof raw.description === "string" && raw.description.trim()) return raw.description.trim();
+    return null;
+  }
+
+  // When there's no real Description, pull out whichever meaningful
+  // biological fields the sample DOES have instead -- checked across both
+  // the sample's own raw keys and any exploded sample_attributes sub-keys,
+  // so it works the same way across GTEx/TCGA/SRA despite their different
+  // raw field names. Skips IDs/technical/administrative fields and
+  // "not applicable"-type placeholder values.
+  const SAMPLE_HIGHLIGHT_KEYS = [
+    { match: ["cell_line", "cell line"], label: "Cell Line" },
+    { match: ["cell_type", "cell type"], label: "Cell Type" },
+    // TCGA's sample_type (Primary Tumor / Solid Tissue Normal /
+    // Metastatic) is one of the single most biologically important
+    // per-sample fields available -- effectively the CASE/CONTROL signal
+    // for cancer studies -- but has nothing to do with anatomical
+    // "tissue", so it's its own entry, checked before Tissue.
+    { match: ["sample_type"], label: "Sample Type" },
+    // "tissue_source_site"/"tissue_source" is which INSTITUTION collected
+    // the specimen (a site code or a biobank/vendor name, e.g. "CF" or
+    // "ILSBio") -- not a body tissue. Excluded so it can't win the
+    // "Tissue" slot with a meaningless code.
+    { match: ["tissue"], exclude: ["source_site", "source"], label: "Tissue" },
+    { match: ["organ_of_origin"], label: "Organ" },
+    { match: ["tumor_stage", "pathologic_stage"], label: "Stage" },
+    { match: ["treatment"], label: "Treatment" },
+    // "age_at_diagnosis" contains "diagnosis" but is a number (often days,
+    // not years), not a disease name -- excluded, same reasoning as "_id".
+    // "diagnosis_method" is procedural (biopsy vs. imaging, etc.), and in
+    // practice is often just an unfilled form placeholder like
+    // "Other method, specify:" -- readable-looking but not real info.
+    { match: ["disease", "diagnosis", "condition"], exclude: ["_id", "age_at", "_method"], label: "Disease/Condition" },
+    { match: ["genotype"], label: "Genotype" },
+    { match: ["strain"], label: "Strain" },
+    { match: ["phenotype"], label: "Phenotype" },
+    { match: ["group"], label: "Group" },
+    { match: ["source_name"], label: "Source" },
+    // These two are never picked up by the generic key-matching loop below
+    // (empty match list) -- they only ever get filled in by the special-case
+    // logic in sampleHighlightPairs() (source_name splitting, FACS
+    // detection). Listed here just to fix their position in the display
+    // order (right after Source), since the final sort looks up each
+    // label's position in this array.
+    { match: [], label: "Cell Population" },
+    { match: [], label: "Sorting" },
+    // Deliberately no sex/age here -- a raw sex code ("2") or age bracket
+    // is demographic housekeeping, not "what is this sample" biology, and
+    // treating it as a real highlight made an otherwise-empty sample (just
+    // IDs + sex + age, e.g. plain GTEx rows) look more informative than it
+    // actually is. Still visible in ▸ More info, just not promoted here.
+  ];
+  const HIGHLIGHT_SKIP_VALUES = new Set(["not applicable", "n/a", "na", "unknown", "none", "-", ""]);
+
+  // A "source_name" value is often "<cell population> <tissue>" squashed
+  // together (e.g. "Lin-CD34+CD38- bone marrow") -- splitting off a
+  // recognized trailing tissue/organ phrase turns one vague line into two
+  // genuinely useful ones: Source (where it's from) and Cell Population
+  // (what was sorted/selected). Falls back to showing the whole value as
+  // Source, unchanged, when nothing matches -- no regression for the
+  // common case where source_name is already just a plain tissue name.
+  const SOURCE_NAME_TISSUE_SUFFIXES = [
+    "peripheral blood", "whole blood", "bone marrow", "lymph node",
+    "blood", "liver", "lung", "kidney", "spleen", "brain", "skin",
+    "muscle", "pancreas", "colon", "breast", "prostate", "ovary",
+    "testis", "thymus", "adipose", "heart", "stomach", "esophagus",
+  ];
+  function splitSourceName(v){
+    const lower = v.toLowerCase();
+    for (const t of SOURCE_NAME_TISSUE_SUFFIXES){
+      if (lower.endsWith(t) && lower.length > t.length){
+        const tissue = v.slice(v.length - t.length).trim();
+        // Only trim whitespace here, NOT a trailing "-" -- in FACS/marker
+        // notation a trailing "-" is meaningful (e.g. "CD38-" = negative
+        // for that marker), not a leftover separator to strip.
+        const population = v.slice(0, v.length - t.length).trim();
+        if (population) return { source: tissue, population };
+      }
+    }
+    return null;
+  }
+
+  // FACS/flow-cytometry marker channels (CD antigens, forward/side
+  // scatter) in sample_attributes are a strong signal the sample was
+  // FACS-sorted, even though no field says so explicitly.
+  const FACS_MARKER_KEYS = new Set(["fsc-a", "fsc-h", "fsc-w", "ssc-a", "ssc-h", "ssc-w", "facs time", "lin"]);
+  function isFacsSorted(raw){
+    if (!raw || typeof raw.sample_attributes !== "string") return false;
+    const keys = raw.sample_attributes.split("|").map(pair => pair.split(";;")[0].trim().toLowerCase());
+    const hits = keys.filter(k => FACS_MARKER_KEYS.has(k) || /^cd\d+[a-z0-9]*$/.test(k)).length;
+    return hits >= 2;
+  }
+
+  // Some fields hold an opaque code instead of readable text for a given
+  // dataset -- e.g. TCGA's "primary_diagnosis" is sometimes literally an
+  // ICD-O code like "c67.9", not a disease name; a tissue-source-site
+  // code can be a bare 2-letter site code like "CF". These look like data
+  // but tell a biologist nothing on their own. Used to prefer a readable
+  // candidate over a code-shaped one when more than one field matches the
+  // same label, and to suppress a label entirely rather than show a code
+  // as if it were prose.
+  function looksLikeOpaqueCode(v){
+    const t = v.trim();
+    if (t.length <= 3) return true;
+    if (/^[a-z]\d{1,3}(\.\d+)?$/i.test(t)) return true; // ICD-O style, e.g. "c67.9"
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(t)) return true; // UUID
+    if (/^\d+(\.\d+)?$/.test(t)) return true; // a bare number is never real prose for any of these labels
+    return false;
+  }
+
+  function sampleHighlightPairs(raw){
+    if (!raw) return [];
+    const flat = {};
+    Object.keys(raw).forEach(k => {
+      if (k === "sample_attributes" && typeof raw[k] === "string"){
+        raw[k].split("|").forEach(pair => {
+          const [ak, ...rest] = pair.split(";;");
+          if (ak) flat[ak.trim()] = rest.join(";;").trim();
+        });
+      } else if (typeof raw[k] === "string" || typeof raw[k] === "number"){
+        flat[k] = String(raw[k]);
+      }
+    });
+
+    // Collect every usable candidate value per label first, instead of
+    // locking in whichever key happens to be encountered first -- lets a
+    // readable field win over a code-shaped one further down the object.
+    const candidatesByLabel = {};
+    Object.keys(flat).forEach(k => {
+      const v = (flat[k] || "").trim();
+      if (!v || HIGHLIGHT_SKIP_VALUES.has(v.toLowerCase())) return;
+      const kLower = k.toLowerCase();
+      const def = SAMPLE_HIGHLIGHT_KEYS.find(d =>
+        d.match.length && d.match.some(m => kLower.includes(m)) &&
+        !(d.exclude || []).some(x => kLower.includes(x))
+      );
+      if (!def) return;
+      (candidatesByLabel[def.label] = candidatesByLabel[def.label] || []).push(v);
+    });
+
+    const out = [];
+    const seenLabels = new Set();
+    Object.keys(candidatesByLabel).forEach(label => {
+      const candidates = candidatesByLabel[label];
+      if (label === "Source"){
+        const v = candidates.find(c => !looksLikeOpaqueCode(c)) || candidates[0];
+        const split = splitSourceName(v);
+        if (split){
+          seenLabels.add("Source"); out.push(["Source", split.source]);
+          seenLabels.add("Cell Population"); out.push(["Cell Population", split.population]);
+          return;
+        }
+        if (!looksLikeOpaqueCode(v)){ out.push([label, v]); seenLabels.add(label); }
+        return;
+      }
+      const best = candidates.find(c => !looksLikeOpaqueCode(c));
+      if (best){ out.push([label, best]); seenLabels.add(label); }
+      // every candidate looked like a code -- skip this label rather than
+      // show something unreadable
+    });
+    if (!seenLabels.has("Sorting") && isFacsSorted(raw)){
+      out.push(["Sorting", "FACS-sorted"]);
+    }
+    out.sort((a, b) => SAMPLE_HIGHLIGHT_KEYS.findIndex(d => d.label === a[0]) - SAMPLE_HIGHLIGHT_KEYS.findIndex(d => d.label === b[0]));
+    return out;
+  }
+
+  // Real description if there is one; otherwise the highlight key:value
+  // lines; otherwise an honest "nothing available" -- never a title
+  // standing in for a description.
+  function sampleSnippetBodyHtml(raw, large){
+    const desc = extractSampleDescription(raw);
+    if (desc) return `<div class="snip-desc${large ? " large" : ""}">${escapeHtml(desc)}</div>`;
+    const pairs = sampleHighlightPairs(raw);
+    if (pairs.length){
+      return pairs.map(([k, v]) => `<div class="snip-line"><span class="k">${escapeHtml(k)}:</span> ${escapeHtml(v)}</div>`).join("");
+    }
+    // Generic wording since this is shared by the table (toggle labeled
+    // "More info") and the editor (toggle labeled "View Full Sample
+    // Information") -- naming one specific label here would be wrong in
+    // the other context.
+    return `<div class="snip-desc${large ? " large" : ""}">No additional sample information available — see full info below.</div>`;
+  }
+
+  // The "Sample Snippet" cell: description/highlights first, then
+  // tissue/disease hint (each "-" if not present), then a collapse that
+  // reveals the sample's full raw info in place -- replaces the old
+  // separate "▸ view" popover.
+  function sampleSnippetCellHtml(s){
+    return `
+      <div class="snip-box">
+        ${sampleSnippetBodyHtml(s.raw)}
+        <div class="snip-hints">
+          <div class="snip-line"><span class="k">Tissue hint:</span> ${escapeHtml(s.tissue_hint || "Not available")}</div>
+          <div class="snip-line"><span class="k">Disease hint:</span> ${escapeHtml(s.disease_hint || "Not available")}</div>
+        </div>
+        <details class="ds-info-toggle"><summary>More info</summary>${formatRawHtml(s.raw)}</details>
+      </div>`;
+  }
+
+  // View-only progress table: shows what's done, gives access via the
+  // Sample Snippet's own collapse (raw info) and ⋮ (Edit, opens the
+  // one-sample editor). No editable controls live here anymore -- all
+  // curation happens in the editor.
+  function renderCurationTable(){
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    const decisions = (loadSampleDecisions()[currentTaskId] || {})[curProject] || {};
+    const reviewedCount = Object.keys(decisions).filter(runId => hasDecision(decisions[runId])).length;
+
+    const reviewPct = samples.length ? Math.round((reviewedCount / samples.length) * 100) : 0;
+    document.getElementById("cur-progress").innerHTML =
+      `<span class="cur-progress-track"><span class="cur-progress-fill" style="width:${reviewPct}%"></span></span>` +
+      `<span>${reviewedCount} / ${samples.length} reviewed</span>`;
+
+    const totalPages = Math.max(1, Math.ceil(samples.length / PAGE_SIZE));
+    curPage = Math.min(curPage, totalPages - 1);
+    const start = curPage * PAGE_SIZE;
+    const pageSamples = samples.slice(start, start + PAGE_SIZE);
+
+    document.getElementById("cur-tbody").innerHTML = pageSamples.map((s, i) => {
+      const idx = start + i + 1; // display index, not run_id
+      const globalIdx = start + i; // 0-based index into the full samples array, for the editor
+      const rec = decisions[s.run_id] || {};
+      const dClass = decisionClass(rec);
+      return `
+      <tr class="${dClass ? `cur-row-${dClass}` : ""}" data-run="${escapeHtml(s.run_id)}" data-idx="${globalIdx}">
+        <td class="c-idx">${idx}</td>
+        <td>${sampleSnippetCellHtml(s)}</td>
+        <td><span class="cur-blood-pill ${rec.blood ? "" : "unset"}">${escapeHtml(bloodDisplayText(rec))}</span></td>
+        <td>${dClass ? `<span class="cur-decision-badge ${dClass}">${escapeHtml(decisionOnlyText(rec))}</span>` : `<span class="cur-empty-text">—</span>`}</td>
+        <td>${rec.label ? `<span class="cur-label-pill">${escapeHtml(rec.label)}</span>` : `<span class="cur-empty-text">—</span>`}</td>
+        <td class="c-menu">
+          ${dClass ? `<button class="cur-edit-btn" data-idx="${globalIdx}">Edit</button>` : ""}
+        </td>
+      </tr>`;
+    }).join("");
+
+    renderCurationPager(totalPages);
+  }
+
+  function renderCurationPager(totalPages){
+    const pagerEl = document.getElementById("cur-pager");
+    if (totalPages <= 1){ pagerEl.innerHTML = ""; return; }
+    let html = `<button ${curPage === 0 ? "disabled" : ""} data-page="${curPage - 1}">← Prev</button>`;
+    const windowStart = Math.max(0, curPage - 2);
+    const windowEnd = Math.min(totalPages, windowStart + 5);
+    for (let p = windowStart; p < windowEnd; p++){
+      html += `<button class="${p === curPage ? "active" : ""}" data-page="${p}">${p + 1}</button>`;
+    }
+    html += `<button ${curPage === totalPages - 1 ? "disabled" : ""} data-page="${curPage + 1}">Next →</button>`;
+    html += `<span style="color:var(--ink-faint);margin-left:6px;">page ${curPage + 1} of ${totalPages}</span>`;
+    pagerEl.innerHTML = html;
+    pagerEl.querySelectorAll("button[data-page]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        curPage = parseInt(btn.dataset.page, 10);
+        renderCurationTable();
+      });
+    });
+  }
+
+  // ---------- Per-row Edit button ----------
+  // Delegated on #cur-tbody itself (which persists across re-renders --
+  // only its innerHTML changes), so this is wired once, not per-row.
+  document.getElementById("cur-tbody").addEventListener("click", (e) => {
+    const btn = e.target.closest(".cur-edit-btn");
+    if (!btn) return;
+    openSampleEditor(parseInt(btn.dataset.idx, 10));
+  });
+
+  // ---------- Start Labelling / resume ----------
+  // "Handled" here matches hasDecision() above -- Skip counts as decided,
+  // so it's never auto-revisited by resume, only a genuinely untouched
+  // sample is. A biologist who wants to revisit a Skipped sample uses the
+  // ⋮ → Edit menu on it directly, same as editing any other handled row.
+  function findResumeIndex(samples, decisions){
+    for (let i = 0; i < samples.length; i++){
+      if (!hasDecision(decisions[samples[i].run_id])) return i;
+    }
+    return 0; // everything already has a decision
+  }
+
+  document.getElementById("btn-start-labelling").addEventListener("click", () => {
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    if (!samples.length){ showToast("No samples in this dataset."); return; }
+    const decisions = (loadSampleDecisions()[currentTaskId] || {})[curProject] || {};
+    const idx = findResumeIndex(samples, decisions);
+    if (samples.every(s => hasDecision(decisions[s.run_id]))){
+      showToast("All samples already labelled — starting from Sample 1.");
+    }
+    openSampleEditor(idx);
+  });
+
+  // ---------- Blood/tissue RNA pre-fill guess ----------
+  // No such guess existed before this redesign -- the dropdown always
+  // started blank. Only used when a sample has no saved `blood` value yet;
+  // never overwrites an existing saved choice.
+  const BLOOD_NAME_KEYWORDS = ["blood", "pbmc", "peripheral blood mononuclear", "buffy coat", "leukocyte", "plasma", "serum"];
+  function guessBloodTissue(ds, sample){
+    const haystackParts = [];
+    let hasTissueSignal = false;
+    if (sample){
+      if (sample.tissue_hint){ haystackParts.push(sample.tissue_hint); hasTissueSignal = true; }
+      if (sample.disease_hint){ haystackParts.push(sample.disease_hint); hasTissueSignal = true; }
+      if (sample.raw) haystackParts.push(Object.values(sample.raw).filter(v => typeof v === "string").join(" "));
+    }
+    if (ds){
+      (ds.tags || []).forEach(t => {
+        haystackParts.push(t.value);
+        if (t.category === "tissue" || t.category === "disease") hasTissueSignal = true;
+      });
+      const qna = (typeof QNA !== "undefined" && QNA[ds.project]) || [];
+      const sourceType = qna.find(([q]) => q.startsWith("Sample/source type"));
+      if (sourceType){
+        haystackParts.push(sourceType[1]);
+        if (!/not (determinable|specified)/i.test(sourceType[1])) hasTissueSignal = true;
+      }
+    }
+    const haystack = haystackParts.join(" ").toLowerCase();
+    if (BLOOD_NAME_KEYWORDS.some(kw => haystack.includes(kw))) return "blood_based";
+    if (hasTissueSignal) return "tissue_based";
+    return "unsure";
+  }
+
+  // ---------- One-sample-at-a-time editor ----------
+  let editorIdx = 0;
+
+  // Same simple format as the table's Sample Snippet cell (description,
+  // then tissue/disease hint, then a collapse for the full raw dump) --
+  // kept identical on purpose so the biologist sees the same thing here as
+  // in the progress table, just in a larger, more prominent card.
+  function sampleSnippetHtml(ds, s){
+    return `
+      <h2>Sample Snippet</h2>
+      ${sampleSnippetBodyHtml(s.raw, true)}
+      <div class="snip-hints">
+        <div class="snip-line"><span class="k">Tissue hint:</span> ${escapeHtml(s.tissue_hint || "Not available")}</div>
+        <div class="snip-line"><span class="k">Disease hint:</span> ${escapeHtml(s.disease_hint || "Not available")}</div>
+      </div>
+      <details class="ds-info-toggle"><summary>View Full Sample Information</summary>${formatRawHtml(s.raw)}</details>`;
+  }
+
+  function openSampleEditor(idx){
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    if (!samples.length) return;
+    editorIdx = Math.max(0, Math.min(idx, samples.length - 1));
+    document.getElementById("curation-view").style.display = "none";
+    document.getElementById("sample-editor-view").style.display = "";
+    renderSampleEditor();
+  }
+
+  function renderSampleEditor(){
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    const s = samples[editorIdx];
+    if (!s) return;
+    const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(d => d.project === curProject);
+    const decisions = (loadSampleDecisions()[currentTaskId] || {})[curProject] || {};
+    const rec = decisions[s.run_id] || {};
+    const t = loadTasks().find(x => x.id === currentTaskId);
+
+    document.getElementById("editor-counter").textContent = `Sample ${editorIdx + 1} of ${samples.length}`;
+    document.getElementById("editor-progress").textContent = ds ? datasetDisplayName(ds) : curProject;
+    document.getElementById("snippet-card").innerHTML = sampleSnippetHtml(ds, s);
+
+    // Task context stays visible next to every sample -- reviewer decides
+    // Keep/Reject/Skip against what the task actually wants, not from memory.
+    document.getElementById("editor-task-info").innerHTML = t ? `
+      <div><b>${escapeHtml(t.name)}</b></div>
+      <div>${escapeHtml(t.sampleType || "no sample type")} &middot; ${escapeHtml(t.sequenceType || "no sequence type")}</div>
+      <div class="task-labels">${(t.labels || []).map(l => `<span class="task-label-chip">${escapeHtml(l)}</span>`).join("") || "<i>no labels defined</i>"}</div>
+    ` : "";
+
+    // "N reviewed · M remaining" -- same hasDecision() definition as the
+    // progress table's green/white rows and Start Labelling's resume point,
+    // just spelled out here since there's no table of rows to glance at.
+    const reviewedCount = Object.values(decisions).filter(hasDecision).length;
+    document.getElementById("editor-progress-line").textContent =
+      `${reviewedCount} sample${reviewedCount === 1 ? "" : "s"} reviewed · ${samples.length - reviewedCount} remaining`;
+
+    const bloodEl = document.getElementById("editor-blood");
+    const isGuess = !rec.blood;
+    bloodEl.value = rec.blood || guessBloodTissue(ds, s);
+    document.getElementById("editor-blood-hint").textContent = isGuess
+      ? "System's best guess from available metadata — check and change if needed." : "";
+
+    document.getElementById("editor-decision").value = rec.curation || "";
+    syncDecisionButtons();
+
+    const labels = t ? t.labels : [];
+    const labelSel = document.getElementById("editor-label");
+    labelSel.innerHTML = `<option value="">— select —</option>` + labels.map(l => `<option value="${escapeHtml(l)}">${escapeHtml(l)}</option>`).join("");
+    labelSel.value = rec.label || "";
+    labelSel.disabled = rec.curation !== "Keep";
+    document.getElementById("editor-label-req").style.display = rec.curation === "Keep" ? "" : "none";
+    document.getElementById("editor-label-field").classList.toggle("muted", rec.curation !== "Keep");
+    document.getElementById("editor-label-hint").style.display = rec.curation === "Keep" ? "none" : "";
+
+    document.getElementById("btn-editor-prev").disabled = editorIdx === 0;
+  }
+
+  // Reflects #editor-decision's current value onto the segmented buttons'
+  // active state -- called both on render and whenever a button sets the
+  // (still-real, still-hidden) select's value.
+  function syncDecisionButtons(){
+    const val = document.getElementById("editor-decision").value;
+    document.querySelectorAll(".decision-seg-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.val === val);
+    });
+  }
+  document.querySelectorAll(".decision-seg-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const sel = document.getElementById("editor-decision");
+      if (sel.value === btn.dataset.val) return; // clicking the already-active option does nothing, same as before
+      sel.value = btn.dataset.val;
+      sel.dispatchEvent(new Event("change")); // drives the existing Label lock/unlock logic below, unchanged
+      syncDecisionButtons();
+    });
+  });
+
+  // Keep unlocks Label; Reject/Skip lock it again and clear whatever was
+  // selected -- same rule the old table used when moving away from Retain.
+  // The Label field's own "*" only shows while it's actually required
+  // (Keep selected) -- marking it required when it's locked/inapplicable
+  // (Reject/Skip) would be misleading.
+  document.getElementById("editor-decision").addEventListener("change", (e) => {
+    const labelSel = document.getElementById("editor-label");
+    const isKeep = e.target.value === "Keep";
+    document.getElementById("editor-label-req").style.display = isKeep ? "" : "none";
+    document.getElementById("editor-label-field").classList.toggle("muted", !isKeep);
+    document.getElementById("editor-label-hint").style.display = isKeep ? "none" : "";
+    if (isKeep){
+      labelSel.disabled = false;
+    } else {
+      labelSel.disabled = true;
+      labelSel.value = "";
+    }
+  });
+  document.getElementById("editor-blood").addEventListener("change", () => {
+    document.getElementById("editor-blood-hint").textContent = ""; // no longer just a guess once the biologist has looked at/changed it
+  });
+
+  async function saveEditorSample(){
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    const s = samples[editorIdx];
+    if (!s) return;
+    const curation = document.getElementById("editor-decision").value;
+    const blood = document.getElementById("editor-blood").value;
+    const label = curation === "Keep" ? document.getElementById("editor-label").value : "";
+    await setSampleField(currentTaskId, curProject, s.run_id, "blood", blood);
+    await setSampleField(currentTaskId, curProject, s.run_id, "curation", curation);
+    await setSampleField(currentTaskId, curProject, s.run_id, "label", label);
+  }
+
+  // A choice is required before moving to another sample -- Skip exists
+  // exactly for "not ready to decide yet", so there's no legitimate reason
+  // to leave this blank and just move on. If Keep is chosen, Label is also
+  // required (that's the whole point of Keep) -- the "*" next to Label
+  // signals this, but a mistaken click still needs an actual block, not
+  // just a visual hint that's easy to miss. Only applies to in-flow
+  // navigation (Previous/Save & Next); "Back to progress" stays an
+  // unblocked exit, not a decision point.
+  function requireEditorDecision(){
+    const decision = document.getElementById("editor-decision").value;
+    if (!decision){
+      showToast("Complete the sample curation section before moving on.");
+      return false;
+    }
+    if (decision === "Keep" && !document.getElementById("editor-label").value){
+      showToast("Complete the label section before moving on.");
+      return false;
+    }
+    return true;
+  }
+
+  document.getElementById("btn-editor-save-next").addEventListener("click", async () => {
+    if (!requireEditorDecision()) return;
+    await saveEditorSample();
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    if (editorIdx >= samples.length - 1){
+      showToast("Saved — that was the last sample in this dataset.");
+      document.getElementById("sample-editor-view").style.display = "none";
+      document.getElementById("curation-view").style.display = "";
+      renderCurationTable();
+      return;
+    }
+    editorIdx += 1;
+    renderSampleEditor();
+  });
+
+  document.getElementById("btn-editor-prev").addEventListener("click", async () => {
+    if (!requireEditorDecision()) return;
+    await saveEditorSample();
+    if (editorIdx === 0) return;
+    editorIdx -= 1;
+    renderSampleEditor();
+  });
+
+  document.getElementById("btn-editor-back").addEventListener("click", async () => {
+    await saveEditorSample();
+    document.getElementById("sample-editor-view").style.display = "none";
+    document.getElementById("curation-view").style.display = "";
+    renderCurationTable();
+  });
+
+  // ---------- Sample Curation: reset / export / save ----------
+
+  document.getElementById("btn-reset-dataset").addEventListener("click", async () => {
+    const decisions = (loadSampleDecisions()[currentTaskId] || {})[curProject] || {};
+    const n = Object.keys(decisions).length;
+    if (!n){ showToast("Nothing to reset — no samples reviewed yet."); return; }
+    if (!confirm(`Reset all ${n} reviewed sample${n === 1 ? "" : "s"} for ${curProject}? This cannot be undone.`)) return;
+    const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(d => d.project === curProject);
+    curDatasetFileCache = { task_id: currentTaskId, dataset_id: curProject, source: (ds ? ds.data_source : "").toUpperCase(), samples: {} };
+    if (sampleDecisionsCache[currentTaskId]) delete sampleDecisionsCache[currentTaskId][curProject];
+    const taskDir = await tasksDirHandle.getDirectoryHandle(currentTaskId, { create: true });
+    await writeJsonFile(taskDir, datasetFileName(ds), curDatasetFileCache);
+    curPage = 0;
+    renderCurationTable();
+    showToast(`Reset "${curProject}".`);
+  });
+
+  function csvEscape(v){
+    const s = String(v ?? "");
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  }
+
+  function exportCurationCsv(labeledOnly){
+    const samples = (typeof SAMPLES_BY_PROJECT !== "undefined" && SAMPLES_BY_PROJECT[curProject]) || [];
+    const decisions = (loadSampleDecisions()[currentTaskId] || {})[curProject] || {};
+    const t = loadTasks().find(x => x.id === currentTaskId);
+    const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(d => d.project === curProject);
+    const datasetSource = ds ? (ds.data_source || "").toUpperCase() : "";
+    const datasetName = curProject;
+
+    // No disease_condition_labels column -- that was a free-text field the
+    // old table had; the one-sample editor never brought it back, so it
+    // would just be permanently blank for every sample going forward.
+    const rows = [["index", "dataset_source", "dataset_name", "run_id", "tissue_hint", "disease_hint", "blood_tissue_based_rna", "curation", "label", "updated_at"]];
+    samples.forEach((s, i) => {
+      const rec = decisions[s.run_id];
+      if (!rec) return;
+      // Only Retained samples ever count as exportable/labeled -- Removed
+      // and Not Sure samples shouldn't end up in a "labeled" export even
+      // if a stale label lingers on the record.
+      if (labeledOnly && !isLabeledRecord(rec)) return;
+      rows.push([
+        i + 1, datasetSource, datasetName, s.run_id, s.tissue_hint || "", s.disease_hint || "",
+        rec.blood || "", rec.curation || "", rec.label || "",
+        rec.ts ? new Date(rec.ts).toISOString() : "",
+      ]);
+    });
+
+    if (rows.length === 1){
+      showToast("Nothing to export yet — no samples reviewed.");
+      return;
+    }
+
+    const csv = rows.map(r => r.map(csvEscape).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = (t ? t.name : "task").replace(/[^a-z0-9]+/gi, "_").toLowerCase();
+    a.href = url;
+    a.download = `${safeName}__${curProject}${labeledOnly ? "_labeled_only" : "_all"}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${rows.length - 1} row${rows.length - 1 === 1 ? "" : "s"}.`);
+  }
+
+  const exportMenu = document.getElementById("cur-export-menu");
+  document.getElementById("btn-export-csv-toggle").addEventListener("click", (e) => {
+    e.stopPropagation();
+    exportMenu.classList.toggle("open");
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".cur-export-wrap")) exportMenu.classList.remove("open");
+  });
+  document.getElementById("btn-export-csv-retained").addEventListener("click", () => {
+    exportMenu.classList.remove("open");
+    exportCurationCsv(true);
+  });
+  document.getElementById("btn-export-csv-all").addEventListener("click", () => {
+    exportMenu.classList.remove("open");
+    exportCurationCsv(false);
+  });
+
+  document.getElementById("btn-save-exit").addEventListener("click", () => {
+    // Every decision already saves to disk as it's made -- this just gives
+    // an explicit, reassuring "your work is saved" moment before leaving.
+    showToast("✓ Saved.");
+    document.getElementById("btn-back-to-discovery").click();
+  });
+
+  // =========================================================
+  // ---------- Stage 6: Collection Review ----------
+  // =========================================================
+
+  // Coverage check: for each of the 23 sample types a Task can declare,
+  // the keywords we search for across an included dataset's tags (category
+  // + value, lowercased) to see if it plausibly matches. "Other / Unknown"
+  // has no keywords -- it's inherently non-specific, so it always falls
+  // back to a manual look, same as any sample type not listed here.
+  const SAMPLE_TYPE_KEYWORDS = {
+    "Blood - Whole Blood": ["blood"],
+    "Blood - PBMC": ["pbmc", "peripheral blood mononuclear", "blood"],
+    "Blood - Buffy Coat": ["buffy coat", "blood"],
+    "Blood - Leukocytes": ["leukocyte", "blood"],
+    "Blood - Plasma": ["plasma", "blood"],
+    "Blood - Serum": ["serum", "blood"],
+    "Tissue - Lung": ["lung"],
+    "Tissue - Liver": ["liver", "hepat"],
+    "Tissue - Brain": ["brain", "cerebr", "neural"],
+    "Tissue - Breast": ["breast", "mammary"],
+    "Tissue - Kidney": ["kidney", "renal"],
+    "Tissue - Heart": ["heart", "cardiac"],
+    "Tissue - Colon": ["colon", "colorectal"],
+    "Tissue - Muscle": ["muscle"],
+    "Tissue - Skin": ["skin", "cutaneous"],
+    "Tissue - Pancreas": ["pancrea"],
+    "Saliva / Oral": ["saliva", "oral"],
+    "Nasal / Respiratory": ["nasal", "respiratory", "airway", "lung"],
+    "Stool / Feces": ["stool", "fecal", "feces", "gut"],
+    "Urine": ["urine", "urinary"],
+    "Bone Marrow": ["bone marrow"],
+    "Tumor / Cancer": ["tumor", "cancer", "carcinoma", "neoplasm", "malignant"],
+    "Cell Culture / Cell Line": ["cell line", "cell culture", "cultured"],
+  };
+
+  // Reads every included dataset's own tasks/task_NNN/SOURCE_ID.json
+  // straight from disk -- not the sampleDecisionsCache, which is only ever
+  // populated for whichever ONE dataset Sample Curation currently has
+  // open. Collection Review needs ALL included datasets at once. Sample
+  // records are read directly off the sample_NNN-keyed file (no need to
+  // map back to run_id here -- only .curation/.label values matter for
+  // the rollup), so this doesn't depend on samples_data.js being loaded.
+  async function computeRollup(taskId){
+    const collection = getCollection(taskId);
+    const includedProjects = Object.keys(collection).filter(p => collection[p]?.decision === "include");
+    const datasetsByProject = {};
+    (typeof DATASETS !== "undefined" ? DATASETS : []).forEach(d => { datasetsByProject[d.project] = d; });
+
+    let totalSamplesPool = 0, totalReviewed = 0, totalRetained = 0, totalRemoved = 0, totalUnsureCuration = 0, totalLabeled = 0;
+    const labelCounts = {};
+    const perDataset = [];
+    const taskDir = await tasksDirHandle.getDirectoryHandle(taskId, { create: true });
+
+    for (const project of includedProjects){
+      const ds = datasetsByProject[project];
+      if (!ds) continue;
+      totalSamplesPool += ds.n_samples;
+      const fileData = await readJsonFile(taskDir, datasetFileName(ds), { samples: {} });
+      const recs = fileData.samples || {};
+      const sampleKeys = Object.keys(recs);
+      // "Labeled" only counts Retained samples that also have a Label --
+      // this is the sample-level gate from spec §10/§13: dataset inclusion
+      // and sample inclusion are separate decisions, so a Removed/Not-Sure
+      // sample never counts here even if it has a stale label from before
+      // this column existed.
+      const labeledCount = sampleKeys.filter(k => isLabeledRecord(recs[k])).length;
+      const retainedCount = sampleKeys.filter(k => recs[k].curation === "Keep").length;
+      const removedCount = sampleKeys.filter(k => recs[k].curation === "Reject").length;
+      const unsureCount = sampleKeys.filter(k => recs[k].curation === "Skip").length;
+      totalReviewed += sampleKeys.length;
+      totalRetained += retainedCount;
+      totalRemoved += removedCount;
+      totalUnsureCuration += unsureCount;
+      totalLabeled += labeledCount;
+      const datasetLabelCounts = {};
+      sampleKeys.forEach(k => {
+        if (isLabeledRecord(recs[k])){
+          const l = recs[k].label;
+          labelCounts[l] = (labelCounts[l] || 0) + 1;
+          datasetLabelCounts[l] = (datasetLabelCounts[l] || 0) + 1;
+        }
+      });
+      perDataset.push({ project, source: ds.data_source, total: ds.n_samples, reviewed: sampleKeys.length, retained: retainedCount, labeled: labeledCount, labelCounts: datasetLabelCounts });
+    }
+
+    return { includedProjects, totalSamplesPool, totalReviewed, totalRetained, totalRemoved, totalUnsureCuration, totalLabeled, labelCounts, perDataset };
+  }
+
+  let reviewOpenedFrom = "discovery"; // "discovery" | "curation" -- where "← Back" from Collection Review returns to
+
+  async function openReview(taskId, fromView){
+    currentTaskId = taskId;
+    reviewOpenedFrom = fromView || "discovery";
+    const t = loadTasks().find(x => x.id === taskId);
+    document.getElementById("rev-task-name").textContent = t ? `${t.name} — Collection Review` : "Collection Review";
+    document.getElementById("btn-back-from-review").textContent = reviewOpenedFrom === "curation"
+      ? "← Back to Sample Curation"
+      : "← Back to Dataset Discovery";
+
+    document.getElementById("picker-view").style.display = "none";
+    document.getElementById("wizard-view").style.display = "none";
+    document.getElementById("discovery-view").style.display = "none";
+    document.getElementById("curation-view").style.display = "none";
+    document.getElementById("review-view").style.display = "";
+    // Reading every included dataset's file off disk takes a moment --
+    // show a loading state instead of a blank/stale screen while it does.
+    document.getElementById("rev-body").style.display = "none";
+    document.getElementById("rev-loading").style.display = "";
+    document.getElementById("rev-loading").textContent = "Loading sample data…";
+    setNavStep(4);
+
+    await renderReview(t);
+  }
+
+  async function renderReview(t){
+    if (!t) return;
+    const r = await computeRollup(currentTaskId);
+    document.getElementById("rev-loading").style.display = "none";
+    document.getElementById("rev-body").style.display = "";
+
+    // ---- Totals ----
+    // The funnel: reviewed (touched at all) -> retained (kept in the
+    // Collection) -> labeled (retained AND given a Label). Removed/Not
+    // Sure samples are reviewed but never count toward retained/labeled --
+    // this is the sample-level gate from spec §10/§13.
+    const pct = r.totalSamplesPool ? Math.round((r.totalLabeled / r.totalSamplesPool) * 100) : 0;
+    document.getElementById("rev-stats").innerHTML = [
+      ["Datasets included", r.includedProjects.length],
+      ["Total samples (pool)", r.totalSamplesPool.toLocaleString()],
+      ["Samples reviewed", r.totalReviewed.toLocaleString()],
+      ["Samples retained", r.totalRetained.toLocaleString()],
+      ["Removed / Not Sure", `${r.totalRemoved.toLocaleString()} / ${r.totalUnsureCuration.toLocaleString()}`],
+      ["Samples labeled", `${r.totalLabeled.toLocaleString()} (${pct}%)`],
+    ].map(([lbl, num]) => `<div class="rev-stat"><div class="num">${num}</div><div class="lbl">${escapeHtml(lbl)}</div></div>`).join("");
+
+    // ---- Label breakdown ----
+    const labels = t.labels;
+    const maxCount = Math.max(1, ...labels.map(l => r.labelCounts[l] || 0));
+    const labelTotal = labels.reduce((sum, l) => sum + (r.labelCounts[l] || 0), 0);
+    document.getElementById("rev-label-breakdown").innerHTML = r.totalLabeled === 0
+      ? `<div class="rev-empty">No samples labeled yet.</div>`
+      : labels.map(l => {
+          const c = r.labelCounts[l] || 0;
+          const pctW = Math.round((c / maxCount) * 100);
+          const pctOfTotal = labelTotal ? Math.round((c / labelTotal) * 100) : 0;
+          return `<div class="rev-bar-row">
+            <span class="rev-bar-name">${escapeHtml(l)}</span>
+            <div class="rev-bar-track"><div class="rev-bar-fill" style="width:${pctW}%"></div></div>
+            <span class="rev-bar-count">${c} (${pctOfTotal}%)</span>
+          </div>`;
+        }).join("");
+
+    // ---- Per-dataset table ----
+    // One column per Task label, showing that dataset's own count+share --
+    // lets a skewed dataset (one label dominating just THAT dataset) jump
+    // out visually, without needing a separate warning computed elsewhere.
+    const SKEW_THRESHOLD = 0.8;
+    const labelColumnsHtml = labels.map(l => `<th>${escapeHtml(l)}</th>`).join("");
+    document.getElementById("rev-dataset-table").innerHTML = r.perDataset.length === 0
+      ? `<tr><td class="rev-empty" style="padding:14px;">No datasets included in this Collection yet.</td></tr>`
+      : `<thead><tr><th>Dataset</th><th>Source</th><th>Total samples</th><th>Reviewed</th><th>Retained</th>${labelColumnsHtml}</tr></thead>
+         <tbody>${r.perDataset.map(d => {
+           const labelCellsHtml = labels.map(l => {
+             const c = d.labelCounts[l] || 0;
+             const share = d.labeled ? c / d.labeled : 0;
+             const skewed = c > 0 && share >= SKEW_THRESHOLD && labels.length > 1;
+             return `<td class="${skewed ? "rev-skew-cell" : ""}">${c} (${Math.round(share * 100)}%)</td>`;
+           }).join("");
+           return `
+           <tr>
+             <td>${escapeHtml(d.project)}</td>
+             <td>${escapeHtml(d.source)}</td>
+             <td>${d.total.toLocaleString()}</td>
+             <td>${d.reviewed.toLocaleString()}</td>
+             <td>${d.retained.toLocaleString()}</td>
+             ${labelCellsHtml}
+           </tr>`;
+         }).join("")}</tbody>`;
+
+    // ---- Balance check ----
+    // Two separate concerns, per explicit feedback:
+    //   1. a real label being too small (< 5%, not the old 10%)
+    //   2. too many samples stuck as UNKNOWN/UNSURE/NOT SURE -- that's not
+    //      "imbalance", it's "the dataset is mostly unresolved", so it gets
+    //      its own check and its own message rather than reusing #1.
+    const SMALL_LABEL_THRESHOLD = 0.05;
+    const UNCERTAIN_THRESHOLD = 0.5;
+    const UNCERTAIN_PATTERN = /unknown|unsure|not\s*sure/i;
+
+    const counts = labels.map(l => r.labelCounts[l] || 0);
+    const totalCount = counts.reduce((a, b) => a + b, 0);
+
+    // Small-label check only applies to REAL labels -- a low UNKNOWN/UNSURE
+    // share is a good sign (most samples got resolved), not a problem, so
+    // it's excluded here and covered by its own >50% check below instead.
+    const realLabels = labels.filter(l => !UNCERTAIN_PATTERN.test(l));
+    const realCounts = realLabels.map(l => r.labelCounts[l] || 0);
+    const realNonZero = realCounts.filter(c => c > 0);
+
+    let balanceIssue = null;
+    if (r.totalLabeled === 0 || realLabels.length === 0){
+      balanceIssue = null; // covered by go/no-go instead, don't double-warn
+    } else if (realNonZero.length < realLabels.length){
+      const missing = realLabels.filter(l => !(r.labelCounts[l] > 0));
+      balanceIssue = `${missing.length} of ${realLabels.length} real label${realLabels.length === 1 ? "" : "s"} have zero samples so far: ${missing.map(escapeHtml).join(", ")}.`;
+    } else {
+      const min = Math.min(...realCounts);
+      const minShare = min / totalCount;
+      if (minShare < SMALL_LABEL_THRESHOLD){
+        const smallest = realLabels[realCounts.indexOf(min)];
+        balanceIssue = `"${escapeHtml(smallest)}" is only ${Math.round(minShare * 100)}% of labeled samples — under the ${Math.round(SMALL_LABEL_THRESHOLD * 100)}% cutoff, check before freezing.`;
+      }
+    }
+
+    let uncertainIssue = null;
+    if (r.totalLabeled > 0){
+      const uncertainCount = labels.filter(l => UNCERTAIN_PATTERN.test(l)).reduce((sum, l) => sum + (r.labelCounts[l] || 0), 0);
+      const uncertainShare = uncertainCount / totalCount;
+      if (uncertainShare > UNCERTAIN_THRESHOLD){
+        const uncertainLabels = labels.filter(l => UNCERTAIN_PATTERN.test(l));
+        uncertainIssue = `${Math.round(uncertainShare * 100)}% of labeled samples are ${uncertainLabels.map(escapeHtml).join("/")} — over ${Math.round(UNCERTAIN_THRESHOLD * 100)}%, meaning most of this data isn't actually resolved into a real group yet.`;
+      }
+    }
+
+    const balanceNotes = [];
+    if (balanceIssue) balanceNotes.push(`<div class="rev-note warn">⚠ ${balanceIssue}</div>`);
+    if (uncertainIssue) balanceNotes.push(`<div class="rev-note warn">⚠ ${uncertainIssue}</div>`);
+    document.getElementById("rev-balance").innerHTML = balanceNotes.length
+      ? balanceNotes.join('<div style="height:8px;"></div>')
+      : `<div class="rev-note ok">✓ ${r.totalLabeled === 0 ? "No labels yet to check." : "Label groups look reasonably balanced."}</div>`;
+
+    // ---- Coverage check ----
+    const sampleType = t.sampleType || "";
+    const coverageKeywords = SAMPLE_TYPE_KEYWORDS[sampleType] || null;
+    let coverageIssue = null;
+    const coverageChecked = r.includedProjects.length > 0 && !!coverageKeywords;
+    if (coverageChecked){
+      const hasMatch = r.perDataset.some(d => {
+        const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(x => x.project === d.project);
+        if (!ds) return false;
+        const qna = (typeof QNA !== "undefined" && QNA[ds.project]) || [];
+        const qnaText = qna.map(([q, a]) => `${q} ${a}`).join(" ").toLowerCase();
+        const haystack = ds.tags.map(tag => `${tag.category} ${tag.value}`.toLowerCase()).join(" ") + " " + ds.raw_evidence.toLowerCase() + " " + qnaText;
+        return coverageKeywords.some(kw => haystack.includes(kw));
+      });
+      if (!hasMatch) coverageIssue = `Task's sample type is "${escapeHtml(sampleType)}", but none of the included datasets' tags or evidence mention ${coverageKeywords.map(k => `"${escapeHtml(k)}"`).join("/")}.`;
+    }
+    document.getElementById("rev-coverage").innerHTML = r.includedProjects.length === 0
+      ? `<div class="rev-note warn">⚠ No datasets included yet — nothing to check coverage against.</div>`
+      : coverageIssue
+        ? `<div class="rev-note warn">⚠ ${coverageIssue}</div>`
+        : coverageChecked
+          ? `<div class="rev-note ok">✓ At least one included dataset matches the Task's sample type ("${escapeHtml(sampleType)}").</div>`
+          : `<div class="rev-note ok">"${escapeHtml(sampleType)}" has no automated keyword check yet — needs a manual look.</div>`;
+
+    // ---- Go / no-go ----
+    const issues = [];
+    if (r.includedProjects.length === 0) issues.push("No datasets included in this Collection yet.");
+    if (r.totalLabeled === 0) issues.push("No samples have been labeled yet.");
+    if (balanceIssue) issues.push(balanceIssue);
+    if (uncertainIssue) issues.push(uncertainIssue);
+    if (coverageIssue) issues.push(coverageIssue);
+
+    document.getElementById("rev-gonogo").innerHTML = issues.length === 0
+      ? `<div class="rev-gonogo ready">✓ Ready to freeze — labeling looks complete and balanced.</div>`
+      : `<div class="rev-gonogo notready">⚠ ${issues.length} issue${issues.length === 1 ? "" : "s"} to review before freezing
+          <ul>${issues.map(i => `<li>${i}</li>`).join("")}</ul>
+         </div>`;
+  }
+
+  document.getElementById("btn-open-review").addEventListener("click", async () => { await openReview(currentTaskId, "discovery"); });
+  document.getElementById("btn-open-review-from-cur").addEventListener("click", async () => { await openReview(currentTaskId, "curation"); });
+  document.getElementById("btn-back-from-review").addEventListener("click", () => {
+    document.getElementById("review-view").style.display = "none";
+    if (reviewOpenedFrom === "curation" && curProject){
+      document.getElementById("curation-view").style.display = "";
+      setNavStep(3);
+      renderCurationTable();
+    } else {
+      document.getElementById("discovery-view").style.display = "";
+      setNavStep(2);
+      renderDiscoveryList();
+    }
+  });
+
+  // ---------- Raw-field popover (Sample Curation "more info") ----------
+  const rawPopover = document.getElementById("raw-popover");
+  function openRawPopover(btn){
+    document.getElementById("raw-popover-title").textContent = btn.dataset.runLabel;
+    document.getElementById("raw-popover-body").innerHTML = btn.dataset.raw;
+    rawPopover.classList.add("show");
+
+    const r = btn.getBoundingClientRect();
+    const margin = 16;
+    let left = r.right - rawPopover.offsetWidth; // right-align to the button by default
+    left = Math.max(margin, Math.min(left, window.innerWidth - rawPopover.offsetWidth - margin));
+    let top = r.bottom + 6;
+    if (top + rawPopover.offsetHeight > window.innerHeight - margin){
+      top = Math.max(margin, r.top - rawPopover.offsetHeight - 6); // flip above if no room below
+    }
+    rawPopover.style.left = `${left}px`;
+    rawPopover.style.top = `${top}px`;
+  }
+  function closeRawPopover(){
+    rawPopover.classList.remove("show");
+  }
+  // The popover's position is computed once, at open time, from the button's
+  // on-screen spot. It doesn't track the button as the page scrolls, so it'd
+  // end up floating over the wrong row -- close it on scroll instead, same
+  // as most tooltip/menu popovers do. `capture:true` so this also catches
+  // scrolling inside a nested scrollable element (e.g. the table wrapper),
+  // not just the page/window itself.
+  document.addEventListener("scroll", (e) => {
+    if (rawPopover.classList.contains("show") && !rawPopover.contains(e.target)) closeRawPopover();
+  }, true);
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".cur-more-btn");
+    if (btn){ openRawPopover(btn); return; }
+    if (!e.target.closest("#raw-popover")) closeRawPopover();
+  });
+  document.getElementById("raw-popover-close").addEventListener("click", closeRawPopover);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeRawPopover(); });
+
+  // ---------- Dataset hover popover (Sample Curation heading) ----------
+  // Shows the same tags/AI-suggested/AI-Extracted-Information card a
+  // biologist already saw on the Discovery screen, so hovering the dataset
+  // name here lets them cross-check it's the same dataset without leaving
+  // this page. Separate instance from raw-popover above (different trigger --
+  // hover, not click -- and different content), reusing the same
+  // position/scroll-dismiss approach.
+  const dsHoverPopover = document.getElementById("ds-hover-popover");
+  const dsHoverHint = document.getElementById("cur-dataset-tap-hint");
+
+  function openDsHoverPopover(){
+    const ds = (typeof DATASETS !== "undefined" ? DATASETS : []).find(d => d.project === curProject);
+    if (!ds) return;
+    document.getElementById("ds-hover-popover-title").textContent = datasetDisplayName(ds);
+    document.getElementById("ds-hover-popover-body").innerHTML = datasetInfoCardHtml(ds);
+    dsHoverPopover.classList.add("show");
+
+    const r = dsHoverHint.getBoundingClientRect();
+    const margin = 16;
+    let left = r.left;
+    left = Math.max(margin, Math.min(left, window.innerWidth - dsHoverPopover.offsetWidth - margin));
+    let top = r.bottom + 8;
+    if (top + dsHoverPopover.offsetHeight > window.innerHeight - margin){
+      top = Math.max(margin, r.top - dsHoverPopover.offsetHeight - 8); // flip above if no room below
+    }
+    dsHoverPopover.style.left = `${left}px`;
+    dsHoverPopover.style.top = `${top}px`;
+  }
+  function closeDsHoverPopover(){
+    dsHoverPopover.classList.remove("show");
+  }
+  // Click-only, deliberately -- an earlier hover-triggered version opened
+  // too easily just from the mouse passing near the heading. Click is an
+  // explicit action, and works the same on touch as on desktop.
+  // Bound to the hint chip only -- the heading itself used to share this
+  // handler too, but that made tapping the dataset name (to read it, not
+  // to open anything) pop the card open unintentionally.
+  function toggleDsHoverPopover(e){
+    e.stopPropagation();
+    if (dsHoverPopover.classList.contains("show")) closeDsHoverPopover();
+    else openDsHoverPopover();
+  }
+  dsHoverHint.addEventListener("click", toggleDsHoverPopover);
+  document.addEventListener("click", (e) => {
+    if (dsHoverPopover.classList.contains("show") && !dsHoverPopover.contains(e.target) && e.target !== dsHoverHint){
+      closeDsHoverPopover();
+    }
+  });
+  document.addEventListener("scroll", (e) => {
+    // Ignore scrolls that happen inside the popover's own scrollable body --
+    // otherwise trying to scroll the popover to read the rest of it closes
+    // it on the very first wheel tick.
+    if (dsHoverPopover.classList.contains("show") && !dsHoverPopover.contains(e.target)) closeDsHoverPopover();
+  }, true);
+
+  // ---------- Task context panel: shrink to a slim bar once pinned ----------
+  // A 1px sentinel sits right above the panel -- once it scrolls out of
+  // view (above the viewport), the panel is stuck at top:16px, so switch
+  // it to the compact .pinned layout; back to full-size once scrolled back
+  // to the top.
+  const taskCtxSentinel = document.getElementById("task-context-sentinel");
+  const taskCtxPanel = document.getElementById("task-context-panel");
+  if (taskCtxSentinel && taskCtxPanel && typeof IntersectionObserver !== "undefined"){
+    new IntersectionObserver(([entry]) => {
+      taskCtxPanel.classList.toggle("pinned", !entry.isIntersecting);
+    }, { threshold: 0 }).observe(taskCtxSentinel);
+  }
+
+  // ---------- Connect Project Folder ----------
+  document.getElementById("btn-connect-folder").addEventListener("click", async () => {
+    const errEl = document.getElementById("connect-error");
+    errEl.style.display = "none";
+    const ok = await connectProjectFolder();
+    if (!ok){
+      errEl.textContent = "Couldn't connect -- folder access was cancelled or denied. Try again.";
+      errEl.style.display = "";
+      return;
+    }
+    document.getElementById("connect-view").style.display = "none";
+    document.getElementById("picker-view").style.display = "";
+    setNavStep(1);
+    renderPicker();
+  });
+
+  // ---------- Boot ----------
+  // Nothing renders yet -- the Task picker needs tasksCache, which only
+  // exists after the user grants folder access. #connect-view (shown by
+  // default in the HTML) is the very first thing anyone sees.
+})();
+</script>
+</body>
+</html>
